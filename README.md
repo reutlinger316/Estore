@@ -6,7 +6,11 @@ E-Store, a web based store management system using the laravel stack. The system
 
 <p>
 Md. Moinul Hoque Mihrab - 23201122
+<br>
 Md. Tajwar Islam - 23201280
+<br>
 Showalihin Islam - 23201338
+<br>
 Md. Minhaz Ibne Zaman - 23201357
+<br>
 </p>
