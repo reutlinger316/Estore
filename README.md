@@ -14,3 +14,11 @@ Showalihin Islam - 23201338
 Md. Minhaz Ibne Zaman - 23201357
 <br>
 </p>
+
+<br>
+<br>
+<p>Frontend: Laravel(HTML)<br>
+Backend: Laravel(PHP)<br>
+Styling: Tailwind CSS<br>
+Database: MySQL(HTML)<br>
+</p>
