@@ -4,5 +4,6 @@
 @section('content')
     @auth
         {{auth()->user()->name}}
+        {{'HEY'}}
     @endauth
 @endsection
