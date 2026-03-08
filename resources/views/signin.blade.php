@@ -14,11 +14,11 @@
             @endif
 
             @if(session()->has('error'))
-                <div class="alert alert-danger">{{$session('error')}}</div>
+                <div class="alert alert-danger">{{session('error')}}</div>
             @endif
 
             @if(session()->has('success'))
-                <div class="alert alert-success">{{$session('success')}}</div>
+                <div class="alert alert-success">{{session('success')}}</div>
             @endif
         </div>
         <form action="{{ route('signin.post') }}" class="ms-auto me-auto mt-3" style='width: 500px' method="POST">
