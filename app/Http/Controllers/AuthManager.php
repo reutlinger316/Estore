@@ -40,7 +40,7 @@ class AuthManager extends Controller
 
     function signinPost(Request $request) {
         $request->validate([
-            'name'=>'required',
+            'name'=>'required|unique:users',
             'email'=>'required|email|unique:users',
             'password'=>'required',
             'type'=>'required'
@@ -56,8 +56,12 @@ class AuthManager extends Controller
         if (!$user) {
             return redirect(route('signin'))->with("error", "Signin detiails are not valid");
         }
-        return redirect(route('login'))->with("success", "Signin is a success, Login to use app");
+    
+        Auth::login($user);
+        return redirect()->route('home');
     }
+
+
 
     function logOut() {
         Session::flush();

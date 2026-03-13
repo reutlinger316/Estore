@@ -36,8 +36,13 @@
             <input type="password" class="form-control" name="password">
         </div>
         <div class="mb-3">
-            <label class="form-label">Type</label>
-            <input type="name" class="form-control" name="type">
+
+            <label class="form-label">Type</label>        
+            <select name="type">
+                <option value="Customer">Customer</option>
+                <option value="Merchant">Merchant</option>
+                <option value="Store">Store</option>
+            </select>
         </div>
 
         <button type="submit" class="btn btn-primary">Submit</button>

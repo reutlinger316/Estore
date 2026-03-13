@@ -1,6 +1,6 @@
 <nav class="navbar">
   <div class="container-fluid">
-    <a class="navbar-brand" href="#">{{ config('app.name') }}</a>
+    <a class="navbar-brand" href="{{route('home')}}">{{ config('app.name') }}</a>
     <ul class="navbar-nav">
       <li><a class="nav-link active" href="{{route('home')}}">Home</a></li>
       @auth
