@@ -15,10 +15,11 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
-            $table->string('type')->default('Customer');
+            $table->string('role')->default('customer');
             $table->decimal('balance', 15, 2)->default(0);
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->boolean('status')->default(true);
             $table->rememberToken();
             $table->timestamps();
         });
@@ -31,7 +32,7 @@ return new class extends Migration
 
         Schema::create('sessions', function (Blueprint $table) {
             $table->string('id')->primary();
-            $table->foreignId('user_id')->nullable()->index();
+            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete()->index();
             $table->string('ip_address', 45)->nullable();
             $table->text('user_agent')->nullable();
             $table->longText('payload');
@@ -44,8 +45,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('users');
-        Schema::dropIfExists('password_reset_tokens');
         Schema::dropIfExists('sessions');
+        Schema::dropIfExists('password_reset_tokens');
+        Schema::dropIfExists('users');
     }
 };

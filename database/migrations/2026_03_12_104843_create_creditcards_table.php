@@ -11,15 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('creditcards', function (Blueprint $table) {
+        Schema::create('credit_cards', function (Blueprint $table) {
             $table->id();
+            $table->string('card_no')->unique();
+            $table->string('cvv', 4);
+            $table->date('exp_date');
+            $table->decimal('balance', 15, 2)->default(0);
+            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
             $table->timestamps();
-            $table->string('cardNo');
-            $table->string('cvv',4);
-            $table->date('expDate');
-            $table->decimal('balance', 15, 2);
-            $table->unsignedBigInteger('user_id');
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 
@@ -28,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('creditcards');
+        Schema::dropIfExists('credit_cards');
     }
 };

@@ -1,36 +1,51 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AuthManager;
-use Illuminate\Support\Facades\Auth;
-
-use App\Http\Controllers\CreditcardsController;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\CreditCardController;
 use App\Http\Controllers\FundsController;
 
 Route::get('/', function () {
-    if (Auth::check()) {
-        $user = Auth::user();
-        if ($user->type === 'Customer') {
-            return view('customer.welcome');
-        } elseif ($user->type === 'Merchant') {
-            return view('merchant.welcome');
-        } elseif ($user->type === 'Store') {
-            return view('store.welcome');
-        } else {
-            return view('admin.welcome');
-        }
-    }
-    
+    if (auth()->check()) {
 
-    return view('welcome');
+        return match(auth()->user()->role) {
+            'admin' => redirect('/admin/dashboard'),
+            'merchant' => redirect('/merchant/dashboard'),
+            'storefront' => redirect('/storefront/dashboard'),
+            default => redirect('/customer/dashboard'),
+        };
+
+    }
+
+    return view('home');
 })->name('home');
 
-Route::get('/login', [AuthManager::class, 'login'])->name('login');
-Route::post('/login', [AuthManager::class, 'loginPost'])->name('login.post');
-Route::get('/signin', [AuthManager::class, 'signin'])->name('signin');
-Route::post('/signin', [AuthManager::class, 'signinPost'])->name('signin.post');
-Route::get('/logout', [AuthManager::class, 'logOut'])->name('logout');
+Route::middleware('guest')->group(function () {
+    Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
+    Route::post('/register', [AuthController::class, 'register'])->name('register.post');
 
-Route::resource('creditcards', CreditcardsController::class);
-Route::get('/funds', [FundsController::class, 'index'])->name('funds.index');
-Route::post('/funds/transfer', [FundsController::class, 'transfer'])->name('funds.transfer');
+    Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+    Route::post('/login', [AuthController::class, 'login'])->name('login.post');
+});
+
+Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->name('logout');
+
+Route::middleware(['auth', 'active', 'role:customer'])->group(function () {
+    Route::get('/customer/dashboard', [CustomerController::class, 'dashboard'])
+        ->name('customer.dashboard');
+
+    Route::get('/customer/creditcards', [CreditCardController::class, 'index'])
+        ->name('customer.creditcards.index');
+    Route::get('/customer/creditcards/create', [CreditCardController::class, 'create'])
+        ->name('customer.creditcards.create');
+    Route::post('/customer/creditcards', [CreditCardController::class, 'store'])
+        ->name('customer.creditcards.store');
+    Route::delete('/customer/creditcards/{creditcard}', [CreditCardController::class, 'destroy'])
+        ->name('customer.creditcards.destroy');
+
+    Route::get('/customer/funds', [FundsController::class, 'index'])
+        ->name('customer.funds.index');
+    Route::post('/customer/funds/transfer', [FundsController::class, 'transfer'])
+        ->name('customer.funds.transfer');
+});

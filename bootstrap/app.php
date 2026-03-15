@@ -3,6 +3,7 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Http\Request;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -11,8 +12,21 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        $middleware->alias([
+            'role' => \App\Http\Middleware\RoleMiddleware::class,
+            'active' => \App\Http\Middleware\EnsureUserIsActive::class,
+        ]);
+        $middleware->redirectGuestsTo('/login');
+        $middleware->redirectUsersTo(function (Request $request): string {
+            return match ($request->user()?->role) {
+                'admin' => '/admin/dashboard',
+                'merchant' => '/merchant/dashboard',
+                'storefront' => '/storefront/dashboard',
+                default => '/customer/dashboard',
+            };
+        });
     })
+
     ->withExceptions(function (Exceptions $exceptions): void {
         //
     })->create();
