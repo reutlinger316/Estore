@@ -73,7 +73,7 @@ Route::middleware(['auth', 'active', 'role:merchant'])->group(function () {
     Route::get('/merchant/dashboard', [MerchantController::class, 'dashboard'])->name('merchant.dashboard');
     Route::get('/merchant/storefronts', [MerchantStoreFrontController::class, 'index'])->name('merchant.storefronts.index');
     Route::get('/merchant/storefronts/create', [MerchantStoreFrontController::class, 'create'])->name('merchant.storefronts.create');
-    Route::post('/merchant/storefronts', [MerchantStoreFrontController::class, 'store'])->name('merchant.storefronts.store');
+    Route::post('/merchant/storefronts', [MerchantStoreFrontController::class, 'store'])->name('merchant.storefronts.storefront');
 
     Route::get('/merchant/storefronts/{storeFront}/items', [MerchantItemController::class, 'index'])->name('merchant.items.index');
     Route::get('/merchant/storefronts/{storeFront}/items/create', [MerchantItemController::class, 'create'])->name('merchant.items.create');
