@@ -1,32 +1,33 @@
-@extends('layout')
-@section('title','Credit Cards')
+@extends('layouts.app')
 
 @section('content')
     <div class="container">
-        <h1>All Cards</h1>
+        <h2 class="section-title">My Credit Cards</h2>
 
-        {{-- Success message --}}
-        @if(session('success'))
-            <div class="alert alert-success">
-                {{ session('success') }}
-            </div>
-        @endif
+        <div class="actions">
+            <a href="{{ route('customer.creditcards.create') }}" class="btn btn-primary">Add Credit Card</a>
+        </div>
 
-        <a href="{{ route('creditcards.create') }}" class="btn btn-primary">Add New Card</a>
+        <div class="list-block">
+            @forelse($cards as $card)
+                <div class="card">
+                    <p><strong>Card Number:</strong> {{ $card->card_no }}</p>
+                    <p><strong>Expiry Date:</strong> {{ $card->exp_date->format('Y-m-d') }}</p>
+                    <p><strong>Balance:</strong> {{ number_format($card->balance, 2) }}</p>
 
-        @foreach($cards as $card)
-            <div class="card" style="background:#fff; padding:1rem; margin:1rem 0; border-radius:6px; box-shadow:0 2px 6px rgba(0,0,0,0.1);">
-                <h2>{{ $card->cardNo }}</h2>
-                <p><strong>CVV:</strong> {{ $card->cvv }}</p>
-                <p><strong>Exp Date:</strong> {{ $card->expDate }}</p>
-                <p><strong>Balance:</strong> {{ $card->balance }}</p>
-
-                <form action="{{ route('creditcards.destroy', $card->id) }}" method="POST">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="btn btn-primary" onclick="return confirm('Are you sure?')">Remove</button>
-                </form>
-            </div>
-        @endforeach
+                    <div class="actions">
+                        <form method="POST" action="/customer/creditcards/{{ $card->id }}" class="inline-form">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-danger">Remove</button>
+                        </form>
+                    </div>
+                </div>
+            @empty
+                <div class="card">
+                    <p>No cards added yet.</p>
+                </div>
+            @endforelse
+        </div>
     </div>
 @endsection

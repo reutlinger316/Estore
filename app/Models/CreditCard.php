@@ -1,20 +1,29 @@
 <?php
 
 namespace App\Models;
+
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class creditcards extends Model
+class CreditCard extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'cardNo',
+        'card_no',
         'cvv',
-        'expDate',
+        'exp_date',
         'balance',
         'user_id',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'exp_date' => 'date',
+            'balance' => 'decimal:2',
+        ];
+    }
 
     public function user()
     {
