@@ -1,6 +1,6 @@
 # E‑Store
 ## Short Description
-E‑Store is a web‑based store management system built with the **Laravel stack**.  
+E‑Store is a web‑based store management system built with the Laravel stack. Our target is to commence everyday store management through the website/app.
 The platform enables:
 - **Customers** to purchase products
 - **Merchants** to manage stores
