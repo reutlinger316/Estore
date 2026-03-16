@@ -52,34 +52,43 @@ Route::middleware(['auth', 'active', 'role:customer'])->group(function () {
         ->name('customer.funds.index');
     Route::post('/customer/funds/transfer', [FundsController::class, 'transfer'])
         ->name('customer.funds.transfer');
+    Route::get('/customer/shops', [CustomerShopController::class, 'index'])->name('customer.shops.index');
+    Route::get('/customer/shops/{storeFront}', [CustomerShopController::class, 'show'])->name('customer.shops.show');
+    Route::get('/customer/cart', [CartController::class, 'index'])->name('customer.cart.index');
+    Route::post('/customer/cart/add/{item}', [CartController::class, 'add'])->name('customer.cart.add');
+    Route::delete('/customer/cart/remove/{cartItem}', [CartController::class, 'remove'])->name('customer.cart.remove');
+    Route::post('/customer/cart/checkout', [CartController::class, 'checkout'])->name('customer.cart.checkout');
+    Route::get('/customer/orders', [OrderController::class, 'index'])->name('customer.orders.index');
+
 });
 
 Route::middleware(['auth', 'active', 'role:merchant'])->group(function () {
     Route::get('/merchant/dashboard', [MerchantController::class, 'dashboard'])->name('merchant.dashboard');
-
     Route::get('/merchant/storefronts', [MerchantStoreFrontController::class, 'index'])->name('merchant.storefronts.index');
     Route::get('/merchant/storefronts/create', [MerchantStoreFrontController::class, 'create'])->name('merchant.storefronts.create');
-    Route::post('/merchant/storefronts', [MerchantStoreFrontController::class, 'store'])->name('merchant.storefronts.storefront');
-    Route::delete('/merchant/storefronts/{storeFront}', [MerchantStoreFrontController::class, 'destroy'])->name('merchant.storefronts.destroy');
+    Route::post('/merchant/storefronts', [MerchantStoreFrontController::class, 'store'])->name('merchant.storefronts.store');
 
     Route::get('/merchant/storefronts/{storeFront}/items', [MerchantItemController::class, 'index'])->name('merchant.items.index');
     Route::get('/merchant/storefronts/{storeFront}/items/create', [MerchantItemController::class, 'create'])->name('merchant.items.create');
-    Route::post('/merchant/storefronts/{storeFront}/items', [MerchantItemController::class, 'storefront'])->name('merchant.items.storefront');
+    Route::post('/merchant/storefronts/{storeFront}/items', [MerchantItemController::class, 'store'])->name('merchant.items.store');
+    Route::delete('/merchant/storefronts/{storeFront}', [MerchantStoreFrontController::class, 'destroy'])->name('merchant.storefronts.destroy');
     Route::get('/merchant/storefronts/{storeFront}/items/{item}/edit', [MerchantItemController::class, 'edit'])->name('merchant.items.edit');
     Route::put('/merchant/storefronts/{storeFront}/items/{item}', [MerchantItemController::class, 'update'])->name('merchant.items.update');
     Route::delete('/merchant/storefronts/{storeFront}/items/{item}', [MerchantItemController::class, 'destroy'])->name('merchant.items.destroy');
+    Route::get('/merchant/discounts', [MerchantDiscountController::class, 'index'])->name('merchant.discounts.index');
+    Route::post('/merchant/items/{item}/discount', [MerchantDiscountController::class, 'updateItemDiscount'])->name('merchant.discounts.items.update');
+    Route::post('/merchant/storefronts/{storeFront}/discount', [MerchantDiscountController::class, 'updateBranchDiscount'])->name('merchant.discounts.storefronts.update');
+    Route::post('/merchant/discounts/global', [MerchantDiscountController::class, 'updateGlobalDiscount'])->name('merchant.discounts.global.update');
+    Route::post('/merchant/storefronts/{storeFront}/transfer-balance', [MerchantStoreFrontController::class, 'transferBalanceToMerchant'])->name('merchant.storefronts.transfer-balance');
 
-    Route::get('/merchant/storefronts/{storeFront}/discounts', [MerchantDiscountController::class, 'index'])->name('merchant.discounts.index');
-    Route::get('/merchant/storefronts/{storeFront}/discounts/create', [MerchantDiscountController::class, 'create'])->name('merchant.discounts.create');
-    Route::post('/merchant/storefronts/{storeFront}/discounts', [MerchantDiscountController::class, 'store'])->name('merchant.discounts.store');
-    Route::get('/merchant/storefronts/{storeFront}/discounts/{discount}/edit', [MerchantDiscountController::class, 'edit'])->name('merchant.discounts.edit');
-    Route::put('/merchant/storefronts/{storeFront}/discounts/{discount}', [MerchantDiscountController::class, 'update'])->name('merchant.discounts.update');
-    Route::delete('/merchant/storefronts/{storeFront}/discounts/{discount}', [MerchantDiscountController::class, 'destroy'])->name('merchant.discounts.destroy');
+
 });
-
 Route::middleware(['auth', 'active', 'role:storefront'])->group(function () {
     Route::get('/storefront/dashboard', [StoreFrontController::class, 'dashboard'])->name('storefront.dashboard');
     Route::get('/storefront/branch-requests', [StoreFrontController::class, 'branchRequests'])->name('storefront.branch-requests');
     Route::post('/storefront/branch-requests/{storeFront}/accept', [StoreFrontController::class, 'acceptBranch'])->name('storefront.branch-requests.accept');
     Route::post('/storefront/branch-requests/{storeFront}/reject', [StoreFrontController::class, 'rejectBranch'])->name('storefront.branch-requests.reject');
+
+    Route::get('/storefront/orders', [StoreFrontOrderController::class, 'index'])->name('storefront.orders.index');
+    Route::post('/storefront/orders/{order}/status', [StoreFrontOrderController::class, 'updateStatus'])->name('storefront.orders.status.update');
 });

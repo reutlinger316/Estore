@@ -10,6 +10,9 @@
         </div>
 
         <div class="actions" style="justify-content:center;">
+            <a href="{{ route('customer.shops.index') }}" class="btn btn-primary">Browse Shops</a>
+            <a href="{{ route('customer.cart.index') }}" class="btn btn-primary">My Cart</a>
+            <a href="{{ route('customer.orders.index') }}" class="btn btn-primary">My Orders</a>
             <a href="{{ route('customer.creditcards.index') }}" class="btn btn-primary">Manage Credit Cards</a>
             <a href="{{ route('customer.funds.index') }}" class="btn btn-primary">Manage Funds</a>
         </div>
