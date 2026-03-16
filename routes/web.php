@@ -1,14 +1,21 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\AdminUserController;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\CreditCardController;
+use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\CustomerShopController;
 use App\Http\Controllers\FundsController;
 use App\Http\Controllers\MerchantController;
-use App\Http\Controllers\StoreFrontController;
-use App\Http\Controllers\MerchantStoreFrontController;
+use App\Http\Controllers\MerchantDiscountController;
 use App\Http\Controllers\MerchantItemController;
+use App\Http\Controllers\MerchantStoreFrontController;
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\StoreFrontController;
+use App\Http\Controllers\StoreFrontOrderController;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     if (auth()->check()) {
@@ -91,4 +98,9 @@ Route::middleware(['auth', 'active', 'role:storefront'])->group(function () {
 
     Route::get('/storefront/orders', [StoreFrontOrderController::class, 'index'])->name('storefront.orders.index');
     Route::post('/storefront/orders/{order}/status', [StoreFrontOrderController::class, 'updateStatus'])->name('storefront.orders.status.update');
+});
+Route::middleware(['auth', 'active', 'role:admin'])->group(function () {
+    Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+    Route::get('/admin/users', [AdminUserController::class, 'index'])->name('admin.users.index');
+    Route::post('/admin/users/{user}/toggle-status', [AdminUserController::class, 'toggleStatus'])->name('admin.users.toggle-status');
 });
