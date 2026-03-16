@@ -4,7 +4,7 @@
     <div class="container">
         <h2 class="section-title">Add Credit Card</h2>
 
-        <form method="POST" action="{{ route('customer.creditcards.store') }}" style="max-width: 600px;">
+        <form method="POST" action="{{ route('customer.creditcards.storefront') }}" style="max-width: 600px;">
             @csrf
 
             <div class="mb-3">
