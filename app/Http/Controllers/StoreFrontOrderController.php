@@ -44,7 +44,9 @@ class StoreFrontOrderController extends Controller
                 $customer = $order->customer;
 
                 if ($customer->balance < $order->total_amount) {
-                    abort(422, 'Customer does not have enough balance to complete this order.');
+                    return back()->withErrors([
+                        'balance' => 'Customer does not have enough balance to complete this order.',
+                    ]);
                 }
 
                 $customer->update([
