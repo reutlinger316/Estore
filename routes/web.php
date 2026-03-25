@@ -51,7 +51,7 @@ Route::middleware(['auth', 'active', 'role:customer'])->group(function () {
     Route::get('/customer/creditcards/create', [CreditCardController::class, 'create'])
         ->name('customer.creditcards.create');
     Route::post('/customer/creditcards', [CreditCardController::class, 'store'])
-        ->name('customer.creditcards.storefront');
+        ->name('customer.creditcards.store');
     Route::delete('/customer/creditcards/{creditcard}', [CreditCardController::class, 'destroy'])
         ->name('customer.creditcards.destroy');
 
