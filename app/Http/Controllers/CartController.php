@@ -8,6 +8,7 @@ use App\Models\Item;
 use App\Models\Order;
 use App\Models\OrderItem;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class CartController extends Controller
 {
@@ -98,34 +99,34 @@ class CartController extends Controller
                 'cart' => 'Your cart is not linked to a shop.',
             ]);
         }
+        DB::transaction(function () use ($cart, $cartItems) {
+            $total = $cartItems->sum(function ($cartItem) {
+                return $cartItem->item->price * $cartItem->quantity;
+            });
 
-        $total = 0;
 
-        foreach ($cartItems as $cartItem) {
-            $total += $cartItem->item->price * $cartItem->quantity;
-        }
-
-        $order = Order::create([
-            'customer_id' => Auth::id(),
-            'store_front_id' => $cart->store_front_id,
-            'total_amount' => $total,
-            'status' => 'pending',
-        ]);
-
-        foreach ($cartItems as $cartItem) {
-            OrderItem::create([
-                'order_id' => $order->id,
-                'item_id' => $cartItem->item_id,
-                'quantity' => $cartItem->quantity,
-                'price' => $cartItem->item->price,
+            $order = Order::create([
+                'customer_id' => Auth::id(),
+                'store_front_id' => $cart->store_front_id,
+                'total_amount' => $total,
+                'status' => 'pending',
             ]);
-        }
 
-        $cart->cartItems()->delete();
+            foreach ($cartItems as $cartItem) {
+                OrderItem::create([
+                    'order_id' => $order->id,
+                    'item_id' => $cartItem->item_id,
+                    'quantity' => $cartItem->quantity,
+                    'price' => $cartItem->item->price,
+                ]);
+            }
 
-        $cart->update([
-            'store_front_id' => null,
-        ]);
+            $cart->cartItems()->delete();
+
+            $cart->update([
+                'store_front_id' => null,
+            ]);
+        });
 
         return redirect('/customer/orders')->with('success', 'Order placed successfully.');
     }

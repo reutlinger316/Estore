@@ -4,7 +4,7 @@
     <div class="container">
         <h2 class="section-title">Create StoreFront</h2>
 
-        <form method="POST" action="{{ route('merchant.storefronts.storefront') }}" style="max-width: 700px;">
+        <form method="POST" action="{{ route('merchant.storefronts.store') }}" style="max-width: 700px;">
             @csrf
 
             <div class="mb-3">
