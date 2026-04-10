@@ -100,9 +100,16 @@ class CartController extends Controller
             ]);
         }
         DB::transaction(function () use ($cart, $cartItems) {
-            $total = $cartItems->sum(function ($cartItem) {
-                return $cartItem->item->price * $cartItem->quantity;
-            });
+            $total = 0;
+            foreach ($cartItems as $cartItem) {
+                
+                $item = $cartItem->item()->lockForUpdate()->first();               
+                if ($item->stock_quantity < $cartItem->quantity) {
+                    abort(422, "Sorry, '{$item->name}' only has {$item->stock_quantity} left in stock.");
+                }                
+                $item->decrement('stock_quantity', $cartItem->quantity);
+                $total += $item->price * $cartItem->quantity;
+            }
 
 
             $order = Order::create([
