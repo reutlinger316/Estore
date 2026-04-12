@@ -9,6 +9,7 @@ use App\Models\Order;
 use App\Models\OrderItem;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Request;
 
 class CartController extends Controller
 {
@@ -80,9 +81,16 @@ class CartController extends Controller
         return back()->with('success', 'Item removed from cart.');
     }
 
-    public function checkout()
+    public function checkout(Request $request)
     {
-        $cart = Cart::firstOrCreate([
+    $request->validate([
+            'order_type' => 'required|in:takeaway,delivery',
+            'delivery_phone' => 'required_if:order_type,delivery',
+            'delivery_address' => 'required_if:order_type,delivery',
+            'delivery_lat' => 'nullable|numeric',
+            'delivery_lng' => 'nullable|numeric',
+        ]);    
+    $cart = Cart::firstOrCreate([
             'customer_id' => Auth::id(),
         ]);
 
@@ -99,7 +107,15 @@ class CartController extends Controller
                 'cart' => 'Your cart is not linked to a shop.',
             ]);
         }
-        DB::transaction(function () use ($cart, $cartItems) {
+        DB::transaction(function () use ($request,$cart, $cartItems) {
+            if ($request->order_type === 'delivery') {
+                Auth::user()->update([
+                    'phone' => $request->delivery_phone,
+                    'default_delivery_address' => $request->delivery_address,
+                    'default_delivery_lat' => $request->delivery_lat,
+                    'default_delivery_lng' => $request->delivery_lng,
+                ]);
+            }
             $total = 0;
             foreach ($cartItems as $cartItem) {
                 
@@ -117,6 +133,11 @@ class CartController extends Controller
                 'store_front_id' => $cart->store_front_id,
                 'total_amount' => $total,
                 'status' => 'pending',
+                'type' => $request->order_type,
+                'delivery_phone' => $request->order_type === 'delivery' ? $request->delivery_phone : null,
+                'delivery_address' => $request->order_type === 'delivery' ? $request->delivery_address : null,
+                'delivery_lat' => $request->order_type === 'delivery' ? $request->delivery_lat : null,
+                'delivery_lng' => $request->order_type === 'delivery' ? $request->delivery_lng : null,
             ]);
 
             foreach ($cartItems as $cartItem) {
