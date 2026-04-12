@@ -75,6 +75,12 @@ Route::middleware(['auth', 'active', 'role:customer'])->group(function () {
         ->name('customer.reviews.store');
     Route::get('/customer/storefronts/{storeFront}/reviews', [ReviewController::class, 'index'])
         ->name('customer.reviews.index');
+    Route::get('/customer/reviews/{review}/edit', [ReviewController::class, 'edit'])
+        ->name('customer.reviews.edit');
+    Route::put('/customer/reviews/{review}', [ReviewController::class, 'update'])
+        ->name('customer.reviews.update');
+    Route::delete('/customer/reviews/{review}', [ReviewController::class, 'destroy'])
+        ->name('customer.reviews.destroy');
 
 
 });

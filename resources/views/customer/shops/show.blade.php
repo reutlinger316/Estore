@@ -51,7 +51,6 @@
 
     <hr>
 
-    {{-- 🆕 Customer Reviews Section --}}
     <h2>Customer Reviews</h2>
 
     @auth
@@ -76,7 +75,7 @@
     <a href="{{ route('customer.reviews.index', $storeFront) }}" class="btn btn-info">See Reviews</a>
 
     <hr>
-    
+
     <h2>Our Other Branches</h2>
 
     @forelse($otherBranches as $branch)

@@ -1,4 +1,4 @@
-/* Reset & base styles */
+
 * {
     margin: 0;
     padding: 0;
@@ -12,7 +12,7 @@ body {
     line-height: 1.6;
 }
 
-/* Layout */
+
 .container {
     max-width: 960px;
     margin: 0 auto;
@@ -74,11 +74,7 @@ body {
     margin-right: auto;
 }
 
-.inline-form {
-    display: inline;
-}
 
-/* Navbar */
 .navbar {
     background: #222;
     color: #fff;
@@ -130,7 +126,7 @@ body {
     font-weight: 600;
 }
 
-/* Forms */
+
 form {
     background: #fff;
     padding: 2rem;
@@ -178,7 +174,7 @@ form select option {
     padding: 0.5rem;
 }
 
-/* Buttons */
+
 .btn,
 button {
     display: inline-block;
@@ -213,7 +209,7 @@ button[type="submit"]:hover {
     background: #b02a37;
 }
 
-/* Alerts */
+
 .alert {
     padding: 0.75rem 1rem;
     border-radius: 6px;
@@ -231,7 +227,7 @@ button[type="submit"]:hover {
     color: #155724;
 }
 
-/* Welcome/dashboard */
+
 .welcome {
     text-align: center;
     margin-top: 2rem;
@@ -247,7 +243,7 @@ button[type="submit"]:hover {
     margin-bottom: 0.5rem;
 }
 
-/* Links */
+
 a {
     color: #007bff;
     text-decoration: none;
@@ -261,4 +257,36 @@ hr {
     margin: 1rem 0;
     border: 0;
     border-top: 1px solid #ddd;
+}
+
+.review-card {
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+.review-title {
+    margin: 0.5rem 0;
+}
+
+.review-actions {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+}
+
+.inline-form {
+    display: inline;       
+    background: transparent;
+    padding: 0;
+    border: none;
+    box-shadow: none;
+}
+
+.action-btn {
+    display: inline-block;
+    padding: 0.65rem 1.2rem;
+    border-radius: 6px;
+    font-weight: 600;
+    line-height: 1.5;
+    cursor: pointer;
 }
