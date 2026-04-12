@@ -15,6 +15,7 @@ use App\Http\Controllers\MerchantStoreFrontController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\StoreFrontController;
 use App\Http\Controllers\StoreFrontOrderController;
+use App\Http\Controllers\ReviewController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -66,6 +67,15 @@ Route::middleware(['auth', 'active', 'role:customer'])->group(function () {
     Route::delete('/customer/cart/remove/{cartItem}', [CartController::class, 'remove'])->name('customer.cart.remove');
     Route::post('/customer/cart/checkout', [CartController::class, 'checkout'])->name('customer.cart.checkout');
     Route::get('/customer/orders', [OrderController::class, 'index'])->name('customer.orders.index');
+
+    
+    Route::get('/customer/storefronts/{storeFront}/reviews/create', [ReviewController::class, 'create'])
+        ->name('customer.reviews.create');
+    Route::post('/customer/storefronts/{storeFront}/reviews', [ReviewController::class, 'store'])
+        ->name('customer.reviews.store');
+    Route::get('/customer/storefronts/{storeFront}/reviews', [ReviewController::class, 'index'])
+        ->name('customer.reviews.index');
+
 
 });
 
