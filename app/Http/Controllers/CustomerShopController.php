@@ -32,7 +32,8 @@ class CustomerShopController extends Controller
             abort(404);
         }
 
-        $items = Item::where('store_front_id', $storeFront->id)
+        $items = Item::with('reviews')
+            ->where('store_front_id', $storeFront->id)
             ->where('is_listed', true)
             ->get();
 

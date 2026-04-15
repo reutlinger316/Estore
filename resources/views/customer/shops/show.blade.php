@@ -38,41 +38,50 @@
                 <p>Discount: {{ $item->discount }}</p>
             @endif
 
-            <form method="POST" action="{{ route('customer.cart.add', $item) }}">
-                @csrf
-                <button type="submit">Add to Cart</button>
-            </form>
+            @if($item->averageRating())
+                @php
+                    $avg = round($item->averageRating(), 1);
+                @endphp
+                <p>
+                    <strong>Item Rating:</strong>
+                    @for($i = 1; $i <= 5; $i++)
+                        @if($i <= round($avg))
+                            <span style="color: gold;">★</span>
+                        @else
+                            <span style="color: #ccc;">★</span>
+                        @endif
+                    @endfor
+                    {{ $avg }}/5
+                </p>
+            @else
+                <p><strong>Item Rating:</strong> No ratings yet</p>
+            @endif
+
+            {{-- Moinul's Customer Side Feature Work: Review-Rating --}}
+            <div style="display: flex; gap: 10px; align-items: center; margin-top: 10px; flex-wrap: wrap;">
+                <form method="POST" action="{{ route('customer.cart.add', $item) }}" style="margin: 0;">
+                    @csrf
+                    <button type="submit">Add to Cart</button>
+                </form>
+
+                @auth
+                    @if(!$item->reviews->where('customer_id', auth()->id())->count())
+                        <a href="{{ route('customer.item-reviews.create', $item) }}" class="btn btn-primary">
+                            Add Review
+                        </a>
+                    @endif
+                @endauth
+
+                <a href="{{ route('customer.item-reviews.index', $item) }}" class="btn btn-info">
+                    See Item Reviews
+                </a>
+            </div>
         </div>
 
         <hr>
     @empty
         <p>No items available for this shop.</p>
     @endforelse
-
-    <hr>
-
-    <h2>Customer Reviews</h2>
-
-    @auth
-    <form method="POST" action="{{ route('customer.reviews.store', $storeFront) }}">
-        @csrf
-        <div class="mb-3">
-            <label for="rating">Rating (1–5)</label>
-            <input type="number" name="rating" min="1" max="5">
-        </div>
-        <div class="mb-3">
-            <label for="title">Review Title</label>
-            <input type="text" name="title">
-        </div>
-        <div class="mb-3">
-            <label for="body">Review Body</label>
-            <textarea name="body"></textarea>
-        </div>
-        <button type="submit" class="btn btn-success">Submit Review</button>
-    </form>
-    @endauth
-
-    <a href="{{ route('customer.reviews.index', $storeFront) }}" class="btn btn-info">See Reviews</a>
 
     <hr>
 

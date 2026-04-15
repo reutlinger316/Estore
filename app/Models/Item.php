@@ -22,4 +22,15 @@ class Item extends Model
     {
         return $this->belongsTo(StoreFront::class);
     }
+
+    /*Moinul's Review Feature part*/
+    public function reviews()
+    {
+        return $this->hasMany(ItemReview::class);
+    }
+
+    public function averageRating()
+    {
+        return $this->reviews()->avg('rating');
+    }
 }

@@ -33,6 +33,8 @@ class StoreFront extends Model
         return $this->hasMany(Item::class);
     }
 
+    
+    /*Moinul's Review Feature part*/
     public function reviews()
     {
         return $this->hasMany(Review::class);

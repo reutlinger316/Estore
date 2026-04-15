@@ -21,6 +21,8 @@
                     <p><strong>Location:</strong> {{ $shop->location }}</p>
 
 
+
+                    {{-- Moinul's Customer Side Feature Work: Review-Rating --}}
                     @if($shop->averageRating())
                         @php
                             $avg = round($shop->averageRating(), 1);
@@ -33,15 +35,17 @@
                             <strong>Rating:</strong>
                             {{-- Full stars --}}
                             @for($i = 0; $i < $fullStars; $i++)
-                                ★
+                                <span style="color: gold;">★</span>
                             @endfor
+
                             {{-- Half star --}}
                             @if($halfStar)
-                                ☆
+                                <span style="color: gold;">★</span>
                             @endif
+
                             {{-- Empty stars --}}
                             @for($i = 0; $i < $emptyStars; $i++)
-                                ☆
+                                <span style="color: #ccc;">★</span>
                             @endfor
 
                             ({{ $avg }}/5)

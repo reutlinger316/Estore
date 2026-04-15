@@ -16,6 +16,7 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\StoreFrontController;
 use App\Http\Controllers\StoreFrontOrderController;
 use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\ItemReviewController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -82,6 +83,19 @@ Route::middleware(['auth', 'active', 'role:customer'])->group(function () {
     Route::delete('/customer/reviews/{review}', [ReviewController::class, 'destroy'])
         ->name('customer.reviews.destroy');
 
+
+    Route::get('/customer/items/{item}/reviews/create', [ItemReviewController::class, 'create'])
+        ->name('customer.item-reviews.create');
+    Route::post('/customer/items/{item}/reviews', [ItemReviewController::class, 'store'])
+        ->name('customer.item-reviews.store');
+    Route::get('/customer/items/{item}/reviews', [ItemReviewController::class, 'index'])
+        ->name('customer.item-reviews.index');
+    Route::get('/customer/item-reviews/{itemReview}/edit', [ItemReviewController::class, 'edit'])
+        ->name('customer.item-reviews.edit');
+    Route::put('/customer/item-reviews/{itemReview}', [ItemReviewController::class, 'update'])
+        ->name('customer.item-reviews.update');
+    Route::delete('/customer/item-reviews/{itemReview}', [ItemReviewController::class, 'destroy'])
+        ->name('customer.item-reviews.destroy');
 
 });
 
