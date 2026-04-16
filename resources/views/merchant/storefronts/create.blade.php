@@ -23,6 +23,21 @@
             </div>
 
             <div class="mb-3">
+                <label>Delivery City/Area Name</label>
+                <input type="text" name="delivery_city" value="{{ old('delivery_city') }}" placeholder="Example: Dhaka">
+            </div>
+
+            <div class="mb-3">
+                <label>Inside Delivery Fee</label>
+                <input type="number" step="0.01" name="inside_delivery_fee" value="{{ old('inside_delivery_fee') }}" placeholder="Example: 80">
+            </div>
+
+            <div class="mb-3">
+                <label>Outside Delivery Fee</label>
+                <input type="number" step="0.01" name="outside_delivery_fee" value="{{ old('outside_delivery_fee') }}" placeholder="Example: 150">
+            </div>
+
+            <div class="mb-3">
                 <label>Assign StoreFront Account Email</label>
                 <input type="email" name="store_account_email" value="{{ old('store_account_email') }}" placeholder="Enter StoreFront account email">
             </div>

@@ -12,10 +12,19 @@ class StoreFront extends Model
         'name',
         'branch_name',
         'location',
+        'delivery_city',
+        'inside_delivery_fee',
+        'outside_delivery_fee',
         'balance',
         'status',
         'confirmation_status',
         'confirmed_at',
+    ];
+
+    protected $casts = [
+        'inside_delivery_fee' => 'decimal:2',
+        'outside_delivery_fee' => 'decimal:2',
+        'balance' => 'decimal:2',
     ];
 
     public function merchant()
@@ -33,8 +42,6 @@ class StoreFront extends Model
         return $this->hasMany(Item::class);
     }
 
-    
-    /*Moinul's Review Feature part*/
     public function reviews()
     {
         return $this->hasMany(Review::class);
@@ -44,5 +51,4 @@ class StoreFront extends Model
     {
         return $this->reviews()->avg('rating');
     }
-
 }

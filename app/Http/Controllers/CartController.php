@@ -83,14 +83,16 @@ class CartController extends Controller
 
     public function checkout(Request $request)
     {
-    $request->validate([
+        $request->validate([
             'order_type' => 'required|in:takeaway,delivery',
-            'delivery_phone' => 'required_if:order_type,delivery',
-            'delivery_address' => 'required_if:order_type,delivery',
+            'delivery_zone' => 'required_if:order_type,delivery|nullable|in:inside,outside',
+            'delivery_phone' => 'required_if:order_type,delivery|nullable|string|max:20',
+            'delivery_address' => 'required_if:order_type,delivery|nullable|string|max:1000',
             'delivery_lat' => 'nullable|numeric',
             'delivery_lng' => 'nullable|numeric',
-        ]);    
-    $cart = Cart::firstOrCreate([
+        ]);
+
+        $cart = Cart::firstOrCreate([
             'customer_id' => Auth::id(),
         ]);
 
@@ -107,7 +109,10 @@ class CartController extends Controller
                 'cart' => 'Your cart is not linked to a shop.',
             ]);
         }
-        DB::transaction(function () use ($request,$cart, $cartItems) {
+
+        $storeFront = $cart->storeFront;
+
+        DB::transaction(function () use ($request, $cart, $cartItems, $storeFront) {
             if ($request->order_type === 'delivery') {
                 Auth::user()->update([
                     'phone' => $request->delivery_phone,
@@ -116,36 +121,69 @@ class CartController extends Controller
                     'default_delivery_lng' => $request->delivery_lng,
                 ]);
             }
-            $total = 0;
+
+            $itemsTotal = 0;
+            $preparedOrderItems = [];
+
             foreach ($cartItems as $cartItem) {
-                
-                $item = $cartItem->item()->lockForUpdate()->first();               
+                $item = $cartItem->item()->lockForUpdate()->first();
+
                 if ($item->stock_quantity < $cartItem->quantity) {
-                    abort(422, "Sorry, '{$item->name}' only has {$item->stock_quantity} left in stock.");
-                }                
+                    abort(422, "Sorry, '{$item->item_name}' only has {$item->stock_quantity} left in stock.");
+                }
+
                 $item->decrement('stock_quantity', $cartItem->quantity);
-                $total += $item->price * $cartItem->quantity;
+
+                $originalPrice = (float) $item->price;
+                $discountPercent = (float) $item->discount;
+                $discountAmount = round(($originalPrice * $discountPercent) / 100, 2);
+                $discountedUnitPrice = max(round($originalPrice - $discountAmount, 2), 0);
+
+                $lineTotal = $discountedUnitPrice * $cartItem->quantity;
+                $itemsTotal += $lineTotal;
+
+                $preparedOrderItems[] = [
+                    'item_id' => $item->id,
+                    'quantity' => $cartItem->quantity,
+                    'price' => $discountedUnitPrice, // save discounted unit price
+                ];
             }
 
+            $deliveryFee = 0;
+            $deliveryZone = null;
+
+            if ($request->order_type === 'delivery') {
+                $deliveryZone = $request->delivery_zone;
+
+                if ($deliveryZone === 'inside') {
+                    $deliveryFee = (float) $storeFront->inside_delivery_fee;
+                } else {
+                    $deliveryFee = (float) $storeFront->outside_delivery_fee;
+                }
+            }
+
+            $grandTotal = $itemsTotal + $deliveryFee;
 
             $order = Order::create([
                 'customer_id' => Auth::id(),
                 'store_front_id' => $cart->store_front_id,
-                'total_amount' => $total,
+                'total_amount' => $grandTotal,
                 'status' => 'pending',
                 'type' => $request->order_type,
+                'delivery_zone' => $request->order_type === 'delivery' ? $deliveryZone : null,
+                'delivery_fee' => $request->order_type === 'delivery' ? $deliveryFee : 0,
                 'delivery_phone' => $request->order_type === 'delivery' ? $request->delivery_phone : null,
                 'delivery_address' => $request->order_type === 'delivery' ? $request->delivery_address : null,
                 'delivery_lat' => $request->order_type === 'delivery' ? $request->delivery_lat : null,
                 'delivery_lng' => $request->order_type === 'delivery' ? $request->delivery_lng : null,
             ]);
 
-            foreach ($cartItems as $cartItem) {
+            foreach ($preparedOrderItems as $orderItemData) {
                 OrderItem::create([
                     'order_id' => $order->id,
-                    'item_id' => $cartItem->item_id,
-                    'quantity' => $cartItem->quantity,
-                    'price' => $cartItem->item->price,
+                    'item_id' => $orderItemData['item_id'],
+                    'quantity' => $orderItemData['quantity'],
+                    'price' => $orderItemData['price'],
                 ]);
             }
 

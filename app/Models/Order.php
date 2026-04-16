@@ -13,6 +13,8 @@ class Order extends Model
         'status',
         'paid_at',
         'type',
+        'delivery_zone',
+        'delivery_fee',
         'delivery_phone',
         'delivery_address',
         'delivery_lat',
@@ -24,6 +26,7 @@ class Order extends Model
         return [
             'paid_at' => 'datetime',
             'total_amount' => 'decimal:2',
+            'delivery_fee' => 'decimal:2',
         ];
     }
 

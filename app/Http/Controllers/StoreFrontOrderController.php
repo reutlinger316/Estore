@@ -25,8 +25,12 @@ class StoreFrontOrderController extends Controller
 
     public function updateStatus(Request $request, Order $order)
     {
+        $allowedStatuses = $order->type === 'takeaway'
+            ? 'pending,accepted,handed_over,cancelled'
+            : 'pending,accepted,preparing,ready,delivered,cancelled';
+
         $request->validate([
-            'status' => 'required|in:pending,accepted,preparing,ready,delivered,cancelled',
+            'status' => 'required|in:' . $allowedStatuses,
         ]);
 
         if (!$order->storeFront || $order->storeFront->store_account_id !== Auth::id()) {
@@ -40,18 +44,21 @@ class StoreFrontOrderController extends Controller
         DB::transaction(function () use ($request, $order) {
             $newStatus = $request->status;
 
-            if ($newStatus === 'delivered' && $order->paid_at === null) {
+            $isFinalSuccessfulStatus =
+                ($order->type === 'takeaway' && $newStatus === 'handed_over') ||
+                ($order->type === 'delivery' && $newStatus === 'delivered');
+
+            if ($isFinalSuccessfulStatus && $order->paid_at === null) {
                 $customer = $order->customer;
 
                 if ($customer->balance < $order->total_amount) {
-                    return back()->withErrors([
-                        'balance' => 'Customer does not have enough balance to complete this order.',
-                    ]);
+                    abort(422, 'Customer does not have enough balance to complete this order.');
                 }
 
                 $customer->update([
                     'balance' => $customer->balance - $order->total_amount,
                 ]);
+
                 $storeFront = $order->storeFront;
                 $storeFront->update([
                     'balance' => $storeFront->balance + $order->total_amount,
@@ -62,7 +69,9 @@ class StoreFrontOrderController extends Controller
                     'customer_id' => $customer->id,
                     'amount' => $order->total_amount,
                     'type' => 'debit',
-                    'description' => 'Payment deducted when order was delivered.',
+                    'description' => $order->type === 'takeaway'
+                        ? 'Payment deducted when takeaway order was handed over.'
+                        : 'Payment deducted when delivery order was completed.',
                 ]);
 
                 $order->paid_at = now();

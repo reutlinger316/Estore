@@ -18,12 +18,16 @@ class Item extends Model
         'is_listed',
     ];
 
+    protected $casts = [
+        'price' => 'decimal:2',
+        'discount' => 'decimal:2',
+    ];
+
     public function storeFront()
     {
         return $this->belongsTo(StoreFront::class);
     }
 
-    /*Moinul's Review Feature part*/
     public function reviews()
     {
         return $this->hasMany(ItemReview::class);
@@ -32,5 +36,15 @@ class Item extends Model
     public function averageRating()
     {
         return $this->reviews()->avg('rating');
+    }
+
+    public function getDiscountAmountAttribute(): float
+    {
+        return round(($this->price * $this->discount) / 100, 2);
+    }
+
+    public function getDiscountedPriceAttribute(): float
+    {
+        return round($this->price - $this->discount_amount, 2);
     }
 }

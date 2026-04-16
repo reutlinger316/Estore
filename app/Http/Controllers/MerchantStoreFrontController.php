@@ -12,7 +12,6 @@ class MerchantStoreFrontController extends Controller
     public function index(Request $request)
     {
         $merchantId = auth()->id();
-
         $search = $request->search;
 
         $query = StoreFront::where('merchant_id', $merchantId);
@@ -21,7 +20,8 @@ class MerchantStoreFrontController extends Controller
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%$search%")
                     ->orWhere('branch_name', 'like', "%$search%")
-                    ->orWhere('location', 'like', "%$search%");
+                    ->orWhere('location', 'like', "%$search%")
+                    ->orWhere('delivery_city', 'like', "%$search%");
             });
         }
 
@@ -41,6 +41,9 @@ class MerchantStoreFrontController extends Controller
             'name' => 'required|string|max:255',
             'branch_name' => 'required|string|max:255',
             'location' => 'nullable|string|max:255',
+            'delivery_city' => 'required|string|max:255',
+            'inside_delivery_fee' => 'required|numeric|min:0',
+            'outside_delivery_fee' => 'required|numeric|min:0',
             'store_account_email' => 'required|email',
         ]);
 
@@ -60,6 +63,9 @@ class MerchantStoreFrontController extends Controller
             'name' => $request->name,
             'branch_name' => $request->branch_name,
             'location' => $request->location,
+            'delivery_city' => $request->delivery_city,
+            'inside_delivery_fee' => $request->inside_delivery_fee,
+            'outside_delivery_fee' => $request->outside_delivery_fee,
             'balance' => 0,
             'status' => true,
             'confirmation_status' => 'pending',
@@ -69,6 +75,7 @@ class MerchantStoreFrontController extends Controller
         return redirect('/merchant/storefronts')
             ->with('success', 'Branch created and confirmation sent to storefront account.');
     }
+
     public function destroy(StoreFront $storeFront)
     {
         if ($storeFront->merchant_id !== Auth::id()) {
@@ -80,6 +87,7 @@ class MerchantStoreFrontController extends Controller
         return redirect('/merchant/storefronts')
             ->with('success', 'StoreFront deleted successfully.');
     }
+
     public function transferBalanceToMerchant(StoreFront $storeFront)
     {
         if ($storeFront->merchant_id !== Auth::id()) {

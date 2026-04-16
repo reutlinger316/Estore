@@ -24,6 +24,13 @@
     <h2>Menu</h2>
 
     @forelse($items as $item)
+        @php
+            $originalPrice = (float) $item->price;
+            $discountPercent = (float) $item->discount;
+            $discountAmount = round(($originalPrice * $discountPercent) / 100, 2);
+            $discountedPrice = max(round($originalPrice - $discountAmount, 2), 0);
+        @endphp
+
         <div>
             @if($item->image)
                 <img src="{{ asset('storage/' . $item->image) }}" alt="{{ $item->item_name }}" width="140"><br><br>
@@ -31,11 +38,25 @@
 
             <h3>{{ $item->item_name }}</h3>
             <p>{{ $item->description }}</p>
-            <p>Price: {{ $item->price }}</p>
+
+            <p>
+                <strong>Price:</strong>
+                @if($item->discount > 0)
+                    <span style="text-decoration: line-through; color: #888;">
+                        {{ number_format($item->price, 2) }}
+                    </span>
+                    <span style="color: green; font-weight: bold; margin-left: 6px;">
+                        {{ number_format($discountedPrice, 2) }}
+                    </span>
+                @else
+                    {{ number_format($item->price, 2) }}
+                @endif
+            </p>
+
             <p>Stock: {{ $item->stock_quantity }}</p>
 
             @if($item->discount > 0)
-                <p>Discount: {{ $item->discount }}</p>
+                <p>Discount: {{ number_format($item->discount, 2) }}%</p>
             @endif
 
             @if($item->averageRating())
@@ -57,7 +78,6 @@
                 <p><strong>Item Rating:</strong> No ratings yet</p>
             @endif
 
-            {{-- Moinul's Customer Side Feature Work: Review-Rating --}}
             <div style="display: flex; gap: 10px; align-items: center; margin-top: 10px; flex-wrap: wrap;">
                 <form method="POST" action="{{ route('customer.cart.add', $item) }}" style="margin: 0;">
                     @csrf

@@ -33,6 +33,9 @@
                     <h3>{{ $storeFront->name }}</h3>
                     <p><strong>Branch:</strong> {{ $storeFront->branch_name }}</p>
                     <p><strong>Location:</strong> {{ $storeFront->location }}</p>
+                    <p><strong>Delivery City:</strong> {{ $storeFront->delivery_city }}</p>
+                    <p><strong>Inside {{ $storeFront->delivery_city }} Fee:</strong> {{ $storeFront->inside_delivery_fee }}</p>
+                    <p><strong>Outside {{ $storeFront->delivery_city }} Fee:</strong> {{ $storeFront->outside_delivery_fee }}</p>
                     <p><strong>Balance:</strong> {{ $storeFront->balance }}</p>
                     <p><strong>Status:</strong> {{ $storeFront->status ? 'Active' : 'Inactive' }}</p>
                     <p><strong>Assigned StoreFront Account:</strong> {{ $storeFront->storeAccount?->name ?? 'Not assigned' }}</p>
