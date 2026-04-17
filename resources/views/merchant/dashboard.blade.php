@@ -13,6 +13,7 @@
         <div class="actions" style="justify-content:center;">
             <a href="{{ route('merchant.storefronts.index') }}" class="btn btn-primary">Manage StoreFronts</a>
             <a href="{{ route('merchant.discounts.index') }}" class="btn btn-primary">Manage Discounts</a>
+            <a href="{{ route('merchant.performance.index') }}" class="btn btn-primary">Store Fronts Performance</a>
         </div>
     </div>
 @endsection

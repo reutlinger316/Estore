@@ -17,6 +17,7 @@ use App\Http\Controllers\StoreFrontController;
 use App\Http\Controllers\StoreFrontOrderController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\ItemReviewController;
+use App\Http\Controllers\MerchantStoreFrontPerformanceController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -118,8 +119,14 @@ Route::middleware(['auth', 'active', 'role:merchant'])->group(function () {
     Route::post('/merchant/discounts/global', [MerchantDiscountController::class, 'updateGlobalDiscount'])->name('merchant.discounts.global.update');
     Route::post('/merchant/storefronts/{storeFront}/transfer-balance', [MerchantStoreFrontController::class, 'transferBalanceToMerchant'])->name('merchant.storefronts.transfer-balance');
 
-
+    Route::get('/merchant/performance', [MerchantStoreFrontPerformanceController::class, 'index'])->name('merchant.performance.index');
+    Route::get('/merchant/performance/{storeFront}', [MerchantStoreFrontPerformanceController::class, 'show'])->name('merchant.performance.show');
+    Route::get('/merchant/performance/{storeFront}/ratings', [MerchantStoreFrontPerformanceController::class, 'ratings'])->name('merchant.performance.ratings');
+    Route::get('/merchant/performance/{storeFront}/orders', [MerchantStoreFrontPerformanceController::class, 'orders'])->name('merchant.performance.orders');
+    
 });
+
+
 Route::middleware(['auth', 'active', 'role:storefront'])->group(function () {
     Route::get('/storefront/dashboard', [StoreFrontController::class, 'dashboard'])->name('storefront.dashboard');
     Route::get('/storefront/branch-requests', [StoreFrontController::class, 'branchRequests'])->name('storefront.branch-requests');
