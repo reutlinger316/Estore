@@ -21,11 +21,12 @@
                         @endif
                     </div>
 
+                    <p><strong>Receipt No:</strong> {{ $order->receipt_number ?? 'Not generated yet' }}</p>
                     <p><strong>Customer:</strong> {{ $order->customer->name }}</p>
                     <p><strong>Branch:</strong> {{ $order->storeFront->name }} - {{ $order->storeFront->branch_name }}</p>
                     <p><strong>Current Status:</strong> {{ ucfirst(str_replace('_', ' ', $order->status)) }}</p>
                     <p><strong>Payment:</strong> {{ $order->paid_at ? 'Paid' : 'Unpaid' }}</p>
-                    <p><strong>Total:</strong> {{ $order->total_amount }}</p>
+                    <p><strong>Total:</strong> {{ number_format($order->total_amount, 2) }}</p>
 
                     @if($order->type === 'delivery')
                         <div style="margin-top: 1rem; background-color: #fafafa; padding: 1rem; border-radius: 6px; border-left: 4px solid #a855f7;">
@@ -33,7 +34,7 @@
                             <p><strong>Zone:</strong>
                                 {{ $order->delivery_zone === 'inside' ? 'Inside ' . $order->storeFront->delivery_city : 'Outside ' . $order->storeFront->delivery_city }}
                             </p>
-                            <p><strong>Delivery Fee:</strong> {{ $order->delivery_fee }}</p>
+                            <p><strong>Delivery Fee:</strong> {{ number_format($order->delivery_fee, 2) }}</p>
                             <p><strong>Phone:</strong> {{ $order->delivery_phone }}</p>
                             <p><strong>Address:</strong> {{ $order->delivery_address }}</p>
 
@@ -52,9 +53,15 @@
                         <p>
                             {{ $orderItem->item->item_name ?? 'Item deleted' }}
                             - Qty: {{ $orderItem->quantity }}
-                            - Price: {{ $orderItem->price }}
+                            - Price: {{ number_format($orderItem->price, 2) }}
                         </p>
                     @endforeach
+
+                    <div class="actions" style="margin: 12px 0;">
+                        <a href="{{ route('storefront.receipts.show', $order) }}" class="btn btn-secondary">
+                            View Receipt
+                        </a>
+                    </div>
 
                     <form method="POST" action="{{ route('storefront.orders.status.update', $order) }}">
                         @csrf

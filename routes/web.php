@@ -19,6 +19,7 @@ use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\ItemReviewController;
 use App\Http\Controllers\MerchantStoreFrontPerformanceController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ReceiptController;
 
 Route::get('/', function () {
     if (auth()->check()) {
@@ -97,6 +98,8 @@ Route::middleware(['auth', 'active', 'role:customer'])->group(function () {
         ->name('customer.item-reviews.update');
     Route::delete('/customer/item-reviews/{itemReview}', [ItemReviewController::class, 'destroy'])
         ->name('customer.item-reviews.destroy');
+    Route::get('/customer/orders/{order}/receipt', [ReceiptController::class, 'customerShow'])
+    ->name('customer.receipts.show');
 
 });
 
@@ -135,6 +138,8 @@ Route::middleware(['auth', 'active', 'role:storefront'])->group(function () {
 
     Route::get('/storefront/orders', [StoreFrontOrderController::class, 'index'])->name('storefront.orders.index');
     Route::post('/storefront/orders/{order}/status', [StoreFrontOrderController::class, 'updateStatus'])->name('storefront.orders.status.update');
+    Route::get('/storefront/orders/{order}/receipt', [ReceiptController::class, 'storefrontShow'])
+    ->name('storefront.receipts.show');
 });
 Route::middleware(['auth', 'active', 'role:admin'])->group(function () {
     Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');

@@ -9,6 +9,8 @@ class Order extends Model
     protected $fillable = [
         'customer_id',
         'store_front_id',
+        'receipt_number',
+        'receipt_generated_at',
         'total_amount',
         'status',
         'paid_at',
@@ -25,6 +27,7 @@ class Order extends Model
     {
         return [
             'paid_at' => 'datetime',
+            'receipt_generated_at' => 'datetime',
             'total_amount' => 'decimal:2',
             'delivery_fee' => 'decimal:2',
         ];
@@ -48,5 +51,12 @@ class Order extends Model
     public function transactions()
     {
         return $this->hasMany(Transaction::class);
+    }
+
+    public function getItemsSubtotalAttribute(): float
+    {
+        return (float) $this->orderItems->sum(function ($orderItem) {
+            return $orderItem->price * $orderItem->quantity;
+        });
     }
 }

@@ -7,9 +7,9 @@ use App\Models\CartItem;
 use App\Models\Item;
 use App\Models\Order;
 use App\Models\OrderItem;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Http\Request;
 
 class CartController extends Controller
 {
@@ -112,7 +112,7 @@ class CartController extends Controller
 
         $storeFront = $cart->storeFront;
 
-        DB::transaction(function () use ($request, $cart, $cartItems, $storeFront) {
+        $order = DB::transaction(function () use ($request, $cart, $cartItems, $storeFront) {
             if ($request->order_type === 'delivery') {
                 Auth::user()->update([
                     'phone' => $request->delivery_phone,
@@ -145,7 +145,7 @@ class CartController extends Controller
                 $preparedOrderItems[] = [
                     'item_id' => $item->id,
                     'quantity' => $cartItem->quantity,
-                    'price' => $discountedUnitPrice, // save discounted unit price
+                    'price' => $discountedUnitPrice,
                 ];
             }
 
@@ -167,6 +167,8 @@ class CartController extends Controller
             $order = Order::create([
                 'customer_id' => Auth::id(),
                 'store_front_id' => $cart->store_front_id,
+                'receipt_number' => 'RCPT-' . now()->format('YmdHis') . '-' . strtoupper(substr(uniqid(), -6)),
+                'receipt_generated_at' => now(),
                 'total_amount' => $grandTotal,
                 'status' => 'pending',
                 'type' => $request->order_type,
@@ -192,8 +194,12 @@ class CartController extends Controller
             $cart->update([
                 'store_front_id' => null,
             ]);
+
+            return $order;
         });
 
-        return redirect('/customer/orders')->with('success', 'Order placed successfully.');
+        return redirect()
+            ->route('customer.receipts.show', $order)
+            ->with('success', 'Order placed successfully. Receipt generated.');
     }
 }

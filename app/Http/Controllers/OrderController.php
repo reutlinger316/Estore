@@ -10,7 +10,7 @@ class OrderController extends Controller
     public function index()
     {
         $orders = Order::where('customer_id', Auth::id())
-            ->with('orderItems.item')
+            ->with(['orderItems.item', 'storeFront'])
             ->latest()
             ->get();
 
