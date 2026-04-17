@@ -19,6 +19,10 @@
                     <p><strong>Description:</strong> {{ $item->description }}</p>
                     <p><strong>Price:</strong> {{ $item->price }}</p>
                     <p><strong>Stock:</strong> {{ $item->stock_quantity }}</p>
+                    <p><strong>Low Stock Threshold:</strong> {{ $item->low_stock_threshold }}</p>
+                    @if($item->isLowStock())
+                        <p style="color:#b91c1c; font-weight:bold;">Low stock alert: item is at or below threshold.</p>
+                    @endif
                     <p><strong>Discount:</strong> {{ $item->discount }}</p>
                     <p><strong>Pre-order:</strong> {{ $item->is_pre_order ? 'Yes' : 'No' }}</p>
 

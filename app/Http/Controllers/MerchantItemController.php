@@ -41,6 +41,7 @@ class MerchantItemController extends Controller
             'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             'price' => 'required|numeric|min:0',
             'stock_quantity' => 'required|integer|min:0',
+            'low_stock_threshold' => 'required|integer|min:1',
             'discount' => 'nullable|numeric|min:0',
             'is_pre_order' => 'nullable|boolean',
         ]);
@@ -58,6 +59,7 @@ class MerchantItemController extends Controller
             'image' => $imagePath,
             'price' => $request->price,
             'stock_quantity' => $request->stock_quantity,
+            'low_stock_threshold' => $request->low_stock_threshold,
             'discount' => $request->discount ?? 0,
             'is_pre_order' => $request->has('is_pre_order'),
             'is_listed' => true,
@@ -88,6 +90,7 @@ class MerchantItemController extends Controller
             'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             'price' => 'required|numeric|min:0',
             'stock_quantity' => 'required|integer|min:0',
+            'low_stock_threshold' => 'required|integer|min:1',
             'discount' => 'nullable|numeric|min:0',
         ]);
 
@@ -96,6 +99,7 @@ class MerchantItemController extends Controller
             'description' => $request->description,
             'price' => $request->price,
             'stock_quantity' => $request->stock_quantity,
+            'low_stock_threshold' => $request->low_stock_threshold,
             'discount' => $request->discount ?? 0,
             'is_pre_order' => $request->has('is_pre_order'),
         ];

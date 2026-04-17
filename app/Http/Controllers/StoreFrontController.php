@@ -9,7 +9,10 @@ class StoreFrontController extends Controller
 {
     public function dashboard()
     {
-        $branches = StoreFront::where('store_account_id', Auth::id())
+        $branches = StoreFront::with(['items' => function ($query) {
+                $query->orderBy('item_name');
+            }])
+            ->where('store_account_id', Auth::id())
             ->where('confirmation_status', 'accepted')
             ->get()
             ->unique(function ($branch) {

@@ -52,6 +52,11 @@ class StoreFront extends Model
         return $this->hasMany(Order::class);
     }
 
+    public function restockRequests()
+    {
+        return $this->hasMany(RestockRequest::class);
+    }
+
     public function averageRating()
     {
         return $this->reviews()->avg('rating');

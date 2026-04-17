@@ -13,6 +13,7 @@ class Item extends Model
         'image',
         'price',
         'stock_quantity',
+        'low_stock_threshold',
         'discount',
         'is_pre_order',
         'is_listed',
@@ -33,9 +34,19 @@ class Item extends Model
         return $this->hasMany(ItemReview::class);
     }
 
+    public function restockRequests()
+    {
+        return $this->hasMany(RestockRequest::class);
+    }
+
     public function averageRating()
     {
         return $this->reviews()->avg('rating');
+    }
+
+    public function isLowStock(): bool
+    {
+        return $this->stock_quantity <= $this->low_stock_threshold;
     }
 
     public function getDiscountAmountAttribute(): float

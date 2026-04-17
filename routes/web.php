@@ -20,6 +20,7 @@ use App\Http\Controllers\ItemReviewController;
 use App\Http\Controllers\MerchantStoreFrontPerformanceController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ReceiptController;
+use App\Http\Controllers\RestockRequestController;
 
 Route::get('/', function () {
     if (auth()->check()) {
@@ -122,6 +123,9 @@ Route::middleware(['auth', 'active', 'role:merchant'])->group(function () {
     Route::post('/merchant/discounts/global', [MerchantDiscountController::class, 'updateGlobalDiscount'])->name('merchant.discounts.global.update');
     Route::post('/merchant/storefronts/{storeFront}/transfer-balance', [MerchantStoreFrontController::class, 'transferBalanceToMerchant'])->name('merchant.storefronts.transfer-balance');
 
+    Route::get('/merchant/restock-requests', [RestockRequestController::class, 'index'])->name('merchant.restock-requests.index');
+    Route::post('/merchant/restock-requests/{restockRequest}/status', [RestockRequestController::class, 'updateStatus'])->name('merchant.restock-requests.status.update');
+
     Route::get('/merchant/performance', [MerchantStoreFrontPerformanceController::class, 'index'])->name('merchant.performance.index');
     Route::get('/merchant/performance/{storeFront}', [MerchantStoreFrontPerformanceController::class, 'show'])->name('merchant.performance.show');
     Route::get('/merchant/performance/{storeFront}/ratings', [MerchantStoreFrontPerformanceController::class, 'ratings'])->name('merchant.performance.ratings');
@@ -137,6 +141,8 @@ Route::middleware(['auth', 'active', 'role:storefront'])->group(function () {
     Route::post('/storefront/branch-requests/{storeFront}/reject', [StoreFrontController::class, 'rejectBranch'])->name('storefront.branch-requests.reject');
 
     Route::get('/storefront/orders', [StoreFrontOrderController::class, 'index'])->name('storefront.orders.index');
+    Route::get('/storefront/branches/{storeFront}/restock-requests/create', [RestockRequestController::class, 'create'])->name('storefront.restock-requests.create');
+    Route::post('/storefront/branches/{storeFront}/restock-requests', [RestockRequestController::class, 'store'])->name('storefront.restock-requests.store');
     Route::post('/storefront/orders/{order}/status', [StoreFrontOrderController::class, 'updateStatus'])->name('storefront.orders.status.update');
     Route::get('/storefront/orders/{order}/receipt', [ReceiptController::class, 'storefrontShow'])
     ->name('storefront.receipts.show');

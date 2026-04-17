@@ -21,6 +21,9 @@
         <label>Stock Quantity:</label><br>
         <input type="number" name="stock_quantity"><br><br>
 
+        <label>Low Stock Alert Threshold:</label><br>
+        <input type="number" name="low_stock_threshold" min="1" value="3"><br><br>
+
         <label>Discount:</label><br>
         <input type="number" step="0.01" name="discount" value="0"><br><br>
 
