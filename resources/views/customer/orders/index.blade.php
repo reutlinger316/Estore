@@ -31,10 +31,17 @@
                         </p>
                     @endforeach
 
-                    <div class="actions" style="margin-top: 12px;">
+                    <div class="actions" style="margin-top: 12px; display:flex; gap:10px; flex-wrap:wrap;">
                         <a href="{{ route('customer.receipts.show', $order) }}" class="btn btn-primary">
                             View Receipt
                         </a>
+
+                        <form method="POST" action="{{ route('customer.orders.order-again', $order) }}">
+                            @csrf
+                            <button type="submit" class="btn btn-success">
+                                Order Again
+                            </button>
+                        </form>
                     </div>
                 </div>
             @empty

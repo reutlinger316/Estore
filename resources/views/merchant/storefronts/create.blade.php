@@ -42,6 +42,13 @@
                 <input type="email" name="store_account_email" value="{{ old('store_account_email') }}" placeholder="Enter StoreFront account email">
             </div>
 
+            <div class="mb-3">
+                <label>
+                    <input type="checkbox" name="allow_combos" value="1" {{ old('allow_combos') ? 'checked' : '' }}>
+                    Allow customer combos for this storefront
+                </label>
+            </div>
+
             <button type="submit" class="btn btn-primary">Create StoreFront</button>
         </form>
 

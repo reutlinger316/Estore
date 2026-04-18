@@ -21,6 +21,101 @@
 
     <hr>
 
+    @if($storeFront->allow_combos)
+        <h2>Create Your Combo</h2>
+
+        <form method="POST" action="{{ route('customer.combos.store', $storeFront) }}" style="margin-bottom: 30px;">
+            @csrf
+
+            <div style="margin-bottom: 12px;">
+                <label>Combo Name</label>
+                <input type="text" name="name" value="{{ old('name') }}" placeholder="Example: My Lunch Combo">
+            </div>
+
+            <p><strong>Select quantities for combo items:</strong></p>
+
+            @foreach($items as $item)
+                <div style="margin-bottom: 10px;">
+                    <label>
+                        {{ $item->item_name }} ({{ number_format($item->discounted_price, 2) }})
+                    </label>
+                    <input type="number" min="0" name="items[{{ $item->id }}]" value="{{ old('items.' . $item->id, 0) }}" style="width: 100px;">
+                </div>
+            @endforeach
+
+            <button type="submit">Save Combo</button>
+        </form>
+
+        <hr>
+
+        <h2>My Combos</h2>
+
+        @forelse($combos as $combo)
+            <div style="border: 1px solid #ddd; padding: 15px; margin-bottom: 15px;">
+                <h3>{{ $combo->name }}</h3>
+
+                @foreach($combo->comboItems as $comboItem)
+                    <p>
+                        {{ $comboItem->item?->item_name ?? 'Deleted item' }}
+                        - Qty: {{ $comboItem->quantity }}
+                    </p>
+                @endforeach
+
+                <p><strong>Total:</strong> {{ number_format($combo->calculated_total, 2) }}</p>
+
+                <form method="POST" action="{{ route('customer.combos.order-now', $combo) }}" style="margin-bottom: 10px;">
+                    @csrf
+
+                    <div style="margin-bottom: 10px;">
+                        <label>
+                            <input type="radio" name="order_type" value="takeaway" checked>
+                            Takeaway
+                        </label>
+
+                        <label style="margin-left: 15px;">
+                            <input type="radio" name="order_type" value="delivery">
+                            Delivery
+                        </label>
+                    </div>
+
+                    <div style="margin-bottom: 10px;">
+                        <label>Delivery Zone</label>
+                        <select name="delivery_zone">
+                            <option value="">Select zone</option>
+                            <option value="inside">Inside {{ $storeFront->delivery_city }}</option>
+                            <option value="outside">Outside {{ $storeFront->delivery_city }}</option>
+                        </select>
+                    </div>
+
+                    <div style="margin-bottom: 10px;">
+                        <label>Delivery Phone</label>
+                        <input type="text" name="delivery_phone" value="{{ auth()->user()->phone }}">
+                    </div>
+
+                    <div style="margin-bottom: 10px;">
+                        <label>Delivery Address</label>
+                        <textarea name="delivery_address">{{ auth()->user()->default_delivery_address }}</textarea>
+                    </div>
+
+                    <input type="hidden" name="delivery_lat" value="{{ auth()->user()->default_delivery_lat }}">
+                    <input type="hidden" name="delivery_lng" value="{{ auth()->user()->default_delivery_lng }}">
+
+                    <button type="submit">Order This Combo</button>
+                </form>
+
+                <form method="POST" action="{{ route('customer.combos.destroy', $combo) }}">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" onclick="return confirm('Delete this combo?')">Delete Combo</button>
+                </form>
+            </div>
+        @empty
+            <p>No combos created yet.</p>
+        @endforelse
+
+        <hr>
+    @endif
+
     <h2>Menu</h2>
 
     @forelse($items as $item)

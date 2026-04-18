@@ -25,6 +25,7 @@ use App\Http\Controllers\MerchantStoreFrontPerformanceController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ReceiptController;
 use App\Http\Controllers\RestockRequestController;
+use App\Http\Controllers\CustomerComboController;
 
 Route::get('/', function () {
     if (auth()->check()) {
@@ -75,6 +76,8 @@ Route::middleware(['auth', 'active', 'role:customer'])->group(function () {
     Route::delete('/customer/cart/remove/{cartItem}', [CartController::class, 'remove'])->name('customer.cart.remove');
     Route::post('/customer/cart/checkout', [CartController::class, 'checkout'])->name('customer.cart.checkout');
     Route::get('/customer/orders', [OrderController::class, 'index'])->name('customer.orders.index');
+    Route::post('/customer/orders/{order}/order-again', [OrderController::class, 'orderAgain'])
+    ->name('customer.orders.order-again');
 
     
     Route::get('/customer/storefronts/{storeFront}/reviews/create', [ReviewController::class, 'create'])
@@ -122,6 +125,17 @@ Route::middleware(['auth', 'active', 'role:customer'])->group(function () {
 
     Route::get('/customer/marketplace/my-products', [MarketplaceProductController::class, 'myProducts'])
         ->name('customer.marketplace.products.my-products');
+    Route::post('/customer/storefronts/{storeFront}/combos', [CustomerComboController::class, 'store'])
+    ->name('customer.combos.store');
+
+    Route::post('/customer/combos/{combo}/order-now', [CustomerComboController::class, 'orderNow'])
+        ->name('customer.combos.order-now');
+
+    Route::delete('/customer/combos/{combo}', [CustomerComboController::class, 'destroy'])
+        ->name('customer.combos.destroy');
+
+    Route::post('/customer/orders/{order}/order-again', [OrderController::class, 'orderAgain'])
+        ->name('customer.orders.order-again');
 });
 
 Route::middleware(['auth', 'active', 'role:merchant'])->group(function () {
@@ -150,6 +164,9 @@ Route::middleware(['auth', 'active', 'role:merchant'])->group(function () {
     Route::get('/merchant/performance/{storeFront}', [MerchantStoreFrontPerformanceController::class, 'show'])->name('merchant.performance.show');
     Route::get('/merchant/performance/{storeFront}/ratings', [MerchantStoreFrontPerformanceController::class, 'ratings'])->name('merchant.performance.ratings');
     Route::get('/merchant/performance/{storeFront}/orders', [MerchantStoreFrontPerformanceController::class, 'orders'])->name('merchant.performance.orders');
+
+    Route::post('/merchant/storefronts/{storeFront}/toggle-combos', [MerchantStoreFrontController::class, 'toggleComboSettings'])
+    ->name('merchant.storefronts.toggle-combos');
     
 });
 

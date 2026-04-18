@@ -45,6 +45,7 @@ class MerchantStoreFrontController extends Controller
             'inside_delivery_fee' => 'required|numeric|min:0',
             'outside_delivery_fee' => 'required|numeric|min:0',
             'store_account_email' => 'required|email',
+            'allow_combos' => 'nullable|boolean',
         ]);
 
         $storeAccount = User::where('email', $request->store_account_email)
@@ -66,6 +67,7 @@ class MerchantStoreFrontController extends Controller
             'delivery_city' => $request->delivery_city,
             'inside_delivery_fee' => $request->inside_delivery_fee,
             'outside_delivery_fee' => $request->outside_delivery_fee,
+            'allow_combos' => $request->boolean('allow_combos'),
             'balance' => 0,
             'status' => true,
             'confirmation_status' => 'pending',
@@ -74,6 +76,19 @@ class MerchantStoreFrontController extends Controller
 
         return redirect('/merchant/storefronts')
             ->with('success', 'Branch created and confirmation sent to storefront account.');
+    }
+
+    public function toggleComboSettings(StoreFront $storeFront)
+    {
+        if ($storeFront->merchant_id !== Auth::id()) {
+            abort(403);
+        }
+
+        $storeFront->update([
+            'allow_combos' => !$storeFront->allow_combos,
+        ]);
+
+        return back()->with('success', 'Combo setting updated successfully.');
     }
 
     public function destroy(StoreFront $storeFront)

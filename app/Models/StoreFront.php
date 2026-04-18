@@ -15,6 +15,7 @@ class StoreFront extends Model
         'delivery_city',
         'inside_delivery_fee',
         'outside_delivery_fee',
+        'allow_combos',
         'balance',
         'status',
         'confirmation_status',
@@ -25,6 +26,7 @@ class StoreFront extends Model
         'inside_delivery_fee' => 'decimal:2',
         'outside_delivery_fee' => 'decimal:2',
         'balance' => 'decimal:2',
+        'allow_combos' => 'boolean',
     ];
 
     public function merchant()
@@ -55,6 +57,11 @@ class StoreFront extends Model
     public function restockRequests()
     {
         return $this->hasMany(RestockRequest::class);
+    }
+
+    public function customerCombos()
+    {
+        return $this->hasMany(CustomerCombo::class);
     }
 
     public function averageRating()

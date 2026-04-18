@@ -36,6 +36,7 @@
                     <p><strong>Delivery City:</strong> {{ $storeFront->delivery_city }}</p>
                     <p><strong>Inside {{ $storeFront->delivery_city }} Fee:</strong> {{ $storeFront->inside_delivery_fee }}</p>
                     <p><strong>Outside {{ $storeFront->delivery_city }} Fee:</strong> {{ $storeFront->outside_delivery_fee }}</p>
+                    <p><strong>Combo Setting:</strong> {{ $storeFront->allow_combos ? 'Enabled' : 'Disabled' }}</p>
                     <p><strong>Balance:</strong> {{ $storeFront->balance }}</p>
                     <p><strong>Status:</strong> {{ $storeFront->status ? 'Active' : 'Inactive' }}</p>
                     <p><strong>Assigned StoreFront Account:</strong> {{ $storeFront->storeAccount?->name ?? 'Not assigned' }}</p>
@@ -45,6 +46,13 @@
                         <a href="{{ route('merchant.items.index', $storeFront) }}" class="btn btn-primary">
                             Manage Items
                         </a>
+
+                        <form method="POST" action="{{ route('merchant.storefronts.toggle-combos', $storeFront) }}" class="inline-form">
+                            @csrf
+                            <button type="submit" class="btn">
+                                {{ $storeFront->allow_combos ? 'Disable Combos' : 'Enable Combos' }}
+                            </button>
+                        </form>
 
                         <form method="POST" action="{{ route('merchant.storefronts.transfer-balance', $storeFront) }}" class="inline-form">
                             @csrf

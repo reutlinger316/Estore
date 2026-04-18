@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cart;
+use App\Models\CustomerCombo;
 use App\Models\Item;
 use App\Models\StoreFront;
 use Illuminate\Http\Request;
@@ -48,12 +49,19 @@ class CustomerShopController extends Controller
 
         $cartCount = $cart ? $cart->cartItems->sum('quantity') : 0;
 
+        $combos = CustomerCombo::with('comboItems.item')
+            ->where('customer_id', Auth::id())
+            ->where('store_front_id', $storeFront->id)
+            ->latest()
+            ->get();
+
         return view('customer.shops.show', compact(
             'storeFront',
             'items',
             'otherBranches',
             'cart',
-            'cartCount'
+            'cartCount',
+            'combos'
         ));
     }
 }
