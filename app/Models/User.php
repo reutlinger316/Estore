@@ -31,4 +31,18 @@ class User extends Authenticatable
     {
         return $this->hasMany(CreditCard::class);
     }
+    public function marketplaceAccount()
+    {
+        return $this->hasOne(\App\Models\MarketplaceAccount::class);
+    }
+
+    public function marketplaceProducts()
+    {
+        return $this->hasMany(\App\Models\MarketplaceProduct::class, 'seller_id');
+    }
+
+    public function hasMarketplaceEligibility(): bool
+    {
+        return (bool) optional($this->marketplaceAccount)->is_eligible;
+    }
 }

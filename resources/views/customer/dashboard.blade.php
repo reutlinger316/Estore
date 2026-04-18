@@ -16,5 +16,14 @@
             <a href="{{ route('customer.creditcards.index') }}" class="btn btn-primary">Manage Credit Cards</a>
             <a href="{{ route('customer.funds.index') }}" class="btn btn-primary">Manage Funds</a>
         </div>
+        <div class="actions" style="justify-content:center;">
+            <a href="{{ route('customer.marketplace.account') }}">
+                <button>Marketplace Account</button>
+            </a>
+
+            <a href="{{ route('customer.marketplace.products.index') }}">
+                <button>Customer Marketplace</button>
+            </a>
+        </div>
     </div>
 @endsection

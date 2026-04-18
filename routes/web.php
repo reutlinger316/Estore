@@ -1,5 +1,9 @@
 <?php
 
+use App\Http\Controllers\AdminMerchantStoreFrontController;
+use App\Http\Controllers\MarketplaceAccountController;
+use App\Http\Controllers\AdminMarketplaceSettingController;
+use App\Http\Controllers\MarketplaceProductController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AdminUserController;
 use App\Http\Controllers\AuthController;
@@ -101,7 +105,23 @@ Route::middleware(['auth', 'active', 'role:customer'])->group(function () {
         ->name('customer.item-reviews.destroy');
     Route::get('/customer/orders/{order}/receipt', [ReceiptController::class, 'customerShow'])
     ->name('customer.receipts.show');
+    Route::get('/customer/marketplace/account', [MarketplaceAccountController::class, 'index'])
+        ->name('customer.marketplace.account');
 
+    Route::post('/customer/marketplace/account/pay', [MarketplaceAccountController::class, 'payAndActivate'])
+        ->name('customer.marketplace.account.pay');
+
+    Route::get('/customer/marketplace/products', [MarketplaceProductController::class, 'index'])
+        ->name('customer.marketplace.products.index');
+
+    Route::get('/customer/marketplace/products/create', [MarketplaceProductController::class, 'create'])
+        ->name('customer.marketplace.products.create');
+
+    Route::post('/customer/marketplace/products', [MarketplaceProductController::class, 'store'])
+        ->name('customer.marketplace.products.store');
+
+    Route::get('/customer/marketplace/my-products', [MarketplaceProductController::class, 'myProducts'])
+        ->name('customer.marketplace.products.my-products');
 });
 
 Route::middleware(['auth', 'active', 'role:merchant'])->group(function () {
@@ -145,10 +165,33 @@ Route::middleware(['auth', 'active', 'role:storefront'])->group(function () {
     Route::post('/storefront/branches/{storeFront}/restock-requests', [RestockRequestController::class, 'store'])->name('storefront.restock-requests.store');
     Route::post('/storefront/orders/{order}/status', [StoreFrontOrderController::class, 'updateStatus'])->name('storefront.orders.status.update');
     Route::get('/storefront/orders/{order}/receipt', [ReceiptController::class, 'storefrontShow'])
-    ->name('storefront.receipts.show');
+        ->name('storefront.receipts.show');
 });
 Route::middleware(['auth', 'active', 'role:admin'])->group(function () {
     Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
     Route::get('/admin/users', [AdminUserController::class, 'index'])->name('admin.users.index');
     Route::post('/admin/users/{user}/toggle-status', [AdminUserController::class, 'toggleStatus'])->name('admin.users.toggle-status');
+    Route::get('/admin/marketplace/settings', [AdminMarketplaceSettingController::class, 'edit'])
+        ->name('admin.marketplace.settings.edit');
+
+    Route::post('/admin/marketplace/settings', [AdminMarketplaceSettingController::class, 'update'])
+        ->name('admin.marketplace.settings.update');
+    Route::get('/admin/users/customers', [AdminUserController::class, 'customers'])
+        ->name('admin.users.customers');
+
+    Route::get('/admin/users/merchants', [AdminUserController::class, 'merchants'])
+        ->name('admin.users.merchants');
+
+    Route::get('/admin/users/storefronts', [AdminUserController::class, 'storefronts'])
+        ->name('admin.users.storefronts');
+
+    Route::get('/admin/users/banned', [AdminUserController::class, 'bannedUsers'])
+        ->name('admin.users.banned');
+
+    Route::get('/admin/merchants/{merchant}/storefronts', [AdminMerchantStoreFrontController::class, 'show'])
+        ->name('admin.merchants.storefronts');
+    Route::get('/admin/marketplace/users', function () {
+        $accounts = \App\Models\MarketplaceAccount::with('user')->latest()->get();
+        return view('admin.marketplace.users', compact('accounts'));
+    })->name('admin.marketplace.users');
 });

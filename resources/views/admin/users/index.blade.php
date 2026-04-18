@@ -2,50 +2,49 @@
 
 @section('content')
     <div class="container">
-        <h2 class="section-title">Manage Users</h2>
+        <h2>Admin - Users</h2>
 
-        <form method="GET" action="{{ route('admin.users.index') }}" style="max-width: 700px; margin-bottom: 1rem;">
-            <div class="mb-3">
-                <label>Search users</label>
-                <input
-                    type="text"
-                    name="search"
-                    placeholder="Search by name, email, or role"
-                    value="{{ request('search') }}"
-                >
-            </div>
+        <div style="margin-bottom: 20px;">
+            <a href="{{ route('admin.users.index') }}"><button>All Users</button></a>
+            <a href="{{ route('admin.users.customers') }}"><button>Customers</button></a>
+            <a href="{{ route('admin.users.merchants') }}"><button>Merchants</button></a>
+            <a href="{{ route('admin.users.storefronts') }}"><button>Storefronts</button></a>
+            <a href="{{ route('admin.users.banned') }}"><button>Banned Users</button></a>
+        </div>
 
-            <div class="actions">
-                <button type="submit" class="btn btn-primary">Search</button>
+        @if($role === 'customer')
+            <h3>Customers</h3>
+        @elseif($role === 'merchant')
+            <h3>Merchants</h3>
+        @elseif($role === 'storefront')
+            <h3>Storefronts</h3>
+        @else
+            <h3>All Users</h3>
+        @endif
 
-                @if(request('search'))
-                    <a href="{{ route('admin.users.index') }}" class="btn btn-danger">Clear</a>
+        @forelse($users as $user)
+            <div style="border:1px solid #ddd; padding:12px; margin-bottom:12px;">
+                <p><strong>Name:</strong> {{ $user->name }}</p>
+                <p><strong>Email:</strong> {{ $user->email }}</p>
+                <p><strong>Role:</strong> {{ ucfirst($user->role) }}</p>
+                <p><strong>Status:</strong> {{ $user->is_active ? 'Active' : 'Banned' }}</p>
+                <p><strong>Balance:</strong> {{ number_format($user->balance, 2) }}</p>
+
+                <form method="POST" action="{{ route('admin.users.toggle-status', $user) }}" style="display:inline-block;">
+                    @csrf
+                    <button type="submit">
+                        {{ $user->is_active ? 'Ban Account' : 'Activate Account' }}
+                    </button>
+                </form>
+
+                @if($user->role === 'merchant')
+                    <a href="{{ route('admin.merchants.storefronts', $user) }}">
+                        <button type="button">View StoreFronts</button>
+                    </a>
                 @endif
             </div>
-        </form>
-
-        <div class="list-block">
-            @forelse($users as $user)
-                <div class="card">
-                    <h3>{{ $user->name }}</h3>
-                    <p><strong>Email:</strong> {{ $user->email }}</p>
-                    <p><strong>Role:</strong> {{ ucfirst($user->role) }}</p>
-                    <p><strong>Status:</strong> {{ $user->status ? 'Active' : 'Inactive' }}</p>
-
-                    <div class="actions">
-                        <form method="POST" action="{{ route('admin.users.toggle-status', $user) }}" class="inline-form">
-                            @csrf
-                            <button type="submit" class="btn btn-primary">
-                                {{ $user->status ? 'Deactivate' : 'Activate' }}
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            @empty
-                <div class="card">
-                    <p>No users found.</p>
-                </div>
-            @endforelse
-        </div>
+        @empty
+            <p>No users found.</p>
+        @endforelse
     </div>
 @endsection
