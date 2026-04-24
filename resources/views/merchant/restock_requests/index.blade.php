@@ -1,41 +1,48 @@
 @extends('layouts.app')
 
-@section('content')
-    <div class="container">
-        <h2 class="section-title">Restock Requests</h2>
+@section('page_title', 'Restock Requests')
+@section('page_subtitle', 'Review incoming restock requests from storefront branches and take action.')
 
-        <div class="list-block">
-            @forelse($requests as $request)
-                <div class="card">
-                    <h3>{{ $request->item->item_name }}</h3>
-                    <p><strong>Store:</strong> {{ $request->storeFront->name }} - {{ $request->storeFront->branch_name }}</p>
-                    <p><strong>Requested By:</strong> {{ $request->requester->name }}</p>
-                    <p><strong>Current Stock:</strong> {{ $request->item->stock_quantity }}</p>
-                    <p><strong>Requested Quantity:</strong> {{ $request->requested_quantity }}</p>
-                    <p><strong>Note:</strong> {{ $request->note ?: 'No note provided' }}</p>
-                    <p><strong>Status:</strong> {{ ucfirst($request->status) }}</p>
+@section('content')
+<div class="page-shell fade-up">
+    @if($requests->count())
+        <div class="entity-grid">
+            @foreach($requests as $request)
+                <div class="entity-card">
+                    <div class="entity-card__header">
+                        <div>
+                            <h3 class="entity-card__title">{{ $request->item->item_name }}</h3>
+                            <p>{{ $request->storeFront->name }} - {{ $request->storeFront->branch_name }}</p>
+                        </div>
+                        <span class="badge {{ $request->status === 'pending' ? 'badge-warning' : ($request->status === 'approved' ? 'badge-success' : 'badge-danger') }}">{{ ucfirst($request->status) }}</span>
+                    </div>
+
+                    <div class="entity-card__meta">
+                        <div class="entity-row"><span>Requested By</span><strong>{{ $request->requester->name }}</strong></div>
+                        <div class="entity-row"><span>Current Stock</span><strong>{{ $request->item->stock_quantity }}</strong></div>
+                        <div class="entity-row"><span>Requested Qty</span><strong>{{ $request->requested_quantity }}</strong></div>
+                        <div class="entity-row"><span>Note</span><strong>{{ $request->note ?: 'No note provided' }}</strong></div>
+                    </div>
 
                     @if($request->status === 'pending')
-                        <div class="actions">
+                        <div class="entity-actions">
                             <form method="POST" action="{{ route('merchant.restock-requests.status.update', $request) }}" class="inline-form">
                                 @csrf
                                 <input type="hidden" name="status" value="approved">
-                                <button type="submit" class="btn btn-success">Approve</button>
+                                <button type="submit" class="btn btn-secondary">Approve</button>
                             </form>
-
                             <form method="POST" action="{{ route('merchant.restock-requests.status.update', $request) }}" class="inline-form">
                                 @csrf
                                 <input type="hidden" name="status" value="rejected">
-                                <button type="submit" class="btn btn-danger">Reject</button>
+                                <button type="submit" class="btn btn-danger-soft">Reject</button>
                             </form>
                         </div>
                     @endif
                 </div>
-            @empty
-                <div class="card">
-                    <p>No restock requests yet.</p>
-                </div>
-            @endforelse
+            @endforeach
         </div>
-    </div>
+    @else
+        <div class="empty-state">No restock requests yet.</div>
+    @endif
+</div>
 @endsection

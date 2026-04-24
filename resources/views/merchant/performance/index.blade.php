@@ -1,37 +1,37 @@
 @extends('layouts.app')
 
+@section('page_title', 'Storefront Performance')
+@section('page_subtitle', 'Compare storefront sales, order volume, and ratings to spot trends quickly.')
+
 @section('content')
-    <div class="container">
-        <h2 class="section-title">Store Fronts Performance</h2>
+<div class="page-shell fade-up">
+    @if($storeFronts->count())
+        <div class="entity-grid">
+            @foreach($storeFronts as $storeFront)
+                <div class="entity-card">
+                    <div class="entity-card__header">
+                        <div>
+                            <h3 class="entity-card__title">{{ $storeFront->name }}</h3>
+                            <p>{{ $storeFront->branch_name }} · {{ $storeFront->location }}</p>
+                        </div>
+                        <span class="badge badge-info">{{ number_format($storeFront->reviews_avg_rating ?? 0, 2) }} ★</span>
+                    </div>
 
-        <div class="list-block">
-            @forelse($storeFronts as $storeFront)
-                <div class="card">
-                    <h3>{{ $storeFront->name }}</h3>
-                    <p><strong>Branch:</strong> {{ $storeFront->branch_name }}</p>
-                    <p><strong>Location:</strong> {{ $storeFront->location }}</p>
-                    <p><strong>Total Orders:</strong> {{ $storeFront->orders_count }}</p>
-                    <p><strong>Total Reviews:</strong> {{ $storeFront->reviews_count }}</p>
-                    <p>
-                        <strong>Total Sales:</strong>
-                        {{ number_format($storeFront->orders_sum_total_amount ?? 0, 2) }}
-                    </p>
-                    <p>
-                        <strong>Average Rating:</strong>
-                        {{ number_format($storeFront->reviews_avg_rating ?? 0, 2) }}
-                    </p>
+                    <div class="entity-card__meta">
+                        <div class="entity-row"><span>Total Orders</span><strong>{{ $storeFront->orders_count }}</strong></div>
+                        <div class="entity-row"><span>Total Reviews</span><strong>{{ $storeFront->reviews_count }}</strong></div>
+                        <div class="entity-row"><span>Total Sales</span><strong>{{ number_format($storeFront->orders_sum_total_amount ?? 0, 2) }}</strong></div>
+                        <div class="entity-row"><span>Average Rating</span><strong>{{ number_format($storeFront->reviews_avg_rating ?? 0, 2) }}</strong></div>
+                    </div>
 
-                    <div class="actions">
-                        <a href="{{ route('merchant.performance.show', $storeFront) }}" class="btn btn-primary">
-                            View Performance Details
-                        </a>
+                    <div class="entity-actions">
+                        <a href="{{ route('merchant.performance.show', $storeFront) }}" class="btn btn-primary">View Details</a>
                     </div>
                 </div>
-            @empty
-                <div class="card">
-                    <p>No storefronts found.</p>
-                </div>
-            @endforelse
+            @endforeach
         </div>
-    </div>
+    @else
+        <div class="empty-state">No storefronts found.</div>
+    @endif
+</div>
 @endsection

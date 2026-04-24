@@ -1,19 +1,30 @@
 @extends('layouts.app')
 
-@section('content')
-    <div class="container">
-        <h2>Marketplace Registered Users</h2>
+@section('page_title', 'Marketplace Users')
+@section('page_subtitle', 'Track paid marketplace enrollments and eligibility status across user accounts.')
 
-        @forelse($accounts as $acc)
-            <div style="border:1px solid #ddd; padding:12px; margin-bottom:12px;">
-                <p><strong>Name:</strong> {{ $acc->user->name }}</p>
-                <p><strong>Email:</strong> {{ $acc->user->email }}</p>
-                <p><strong>Paid Amount:</strong> {{ number_format($acc->paid_fee, 2) }} Tk</p>
-                <p><strong>Status:</strong> {{ $acc->is_eligible ? 'Active' : 'Inactive' }}</p>
-                <p><strong>Activated At:</strong> {{ $acc->paid_at ?? 'Not Activated' }}</p>
-            </div>
-        @empty
-            <p>No marketplace users yet.</p>
-        @endforelse
-    </div>
+@section('content')
+<div class="page-shell fade-up">
+    @if($accounts->count())
+        <div class="entity-grid">
+            @foreach($accounts as $acc)
+                <div class="entity-card">
+                    <div class="entity-card__header">
+                        <div>
+                            <h3 class="entity-card__title">{{ $acc->user->name }}</h3>
+                            <p>{{ $acc->user->email }}</p>
+                        </div>
+                        <span class="badge {{ $acc->is_eligible ? 'badge-success' : 'badge-warning' }}">{{ $acc->is_eligible ? 'Active' : 'Inactive' }}</span>
+                    </div>
+                    <div class="entity-card__meta">
+                        <div class="entity-row"><span>Paid Amount</span><strong>{{ number_format($acc->paid_fee, 2) }} Tk</strong></div>
+                        <div class="entity-row"><span>Activated At</span><strong>{{ $acc->paid_at ?? 'Not Activated' }}</strong></div>
+                    </div>
+                </div>
+            @endforeach
+        </div>
+    @else
+        <div class="empty-state">No marketplace users yet.</div>
+    @endif
+</div>
 @endsection

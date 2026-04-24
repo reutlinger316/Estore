@@ -1,34 +1,46 @@
 @extends('layouts.app')
 
+@section('page_title', 'Merchant Storefronts')
+@section('page_subtitle', 'Inspect all storefront branches that belong to a specific merchant.')
+
 @section('content')
-    <div class="container">
-        <h2>StoreFronts Under Merchant</h2>
-
-        <p><strong>Merchant Name:</strong> {{ $merchant->name }}</p>
-        <p><strong>Merchant Email:</strong> {{ $merchant->email }}</p>
-
-        <a href="{{ route('admin.users.merchants') }}">
-            <button>Back to Merchants</button>
-        </a>
-
-        <br><br>
-
-        @forelse($storeFronts as $storeFront)
-            <div style="border:1px solid #ddd; padding:12px; margin-bottom:12px;">
-                <p><strong>Store Name:</strong> {{ $storeFront->name }}</p>
-                <p><strong>Branch Name:</strong> {{ $storeFront->branch_name }}</p>
-                <p><strong>Location:</strong> {{ $storeFront->location }}</p>
-                <p><strong>Delivery City:</strong> {{ $storeFront->delivery_city }}</p>
-                <p><strong>Status:</strong> {{ $storeFront->status }}</p>
-                <p><strong>Confirmation Status:</strong> {{ $storeFront->confirmation_status }}</p>
-                <p><strong>Balance:</strong> {{ number_format($storeFront->balance, 2) }}</p>
-
-                @if($storeFront->storeAccount)
-                    <p><strong>StoreFront User:</strong> {{ $storeFront->storeAccount->name }} ({{ $storeFront->storeAccount->email }})</p>
-                @endif
+<div class="page-shell fade-up">
+    <section class="section-card">
+        <div class="section-header">
+            <div>
+                <h2>{{ $merchant->name }}</h2>
+                <p>{{ $merchant->email }}</p>
             </div>
-        @empty
-            <p>No storefronts found under this merchant.</p>
-        @endforelse
-    </div>
+            <a href="{{ route('admin.users.merchants') }}" class="btn btn-ghost">Back to Merchants</a>
+        </div>
+    </section>
+
+    @if($storeFronts->count())
+        <div class="entity-grid">
+            @foreach($storeFronts as $storeFront)
+                <div class="entity-card">
+                    <div class="entity-card__header">
+                        <div>
+                            <h3 class="entity-card__title">{{ $storeFront->name }}</h3>
+                            <p>{{ $storeFront->branch_name }}</p>
+                        </div>
+                        <span class="badge {{ $storeFront->confirmation_status === 'approved' ? 'badge-success' : 'badge-warning' }}">{{ ucfirst($storeFront->confirmation_status) }}</span>
+                    </div>
+
+                    <div class="entity-card__meta">
+                        <div class="entity-row"><span>Location</span><strong>{{ $storeFront->location }}</strong></div>
+                        <div class="entity-row"><span>Delivery City</span><strong>{{ $storeFront->delivery_city }}</strong></div>
+                        <div class="entity-row"><span>Status</span><strong>{{ $storeFront->status }}</strong></div>
+                        <div class="entity-row"><span>Balance</span><strong>{{ number_format($storeFront->balance, 2) }}</strong></div>
+                        @if($storeFront->storeAccount)
+                            <div class="entity-row"><span>Storefront User</span><strong>{{ $storeFront->storeAccount->name }} ({{ $storeFront->storeAccount->email }})</strong></div>
+                        @endif
+                    </div>
+                </div>
+            @endforeach
+        </div>
+    @else
+        <div class="empty-state">No storefronts found under this merchant.</div>
+    @endif
+</div>
 @endsection

@@ -1,98 +1,80 @@
 @extends('layouts.app')
 
+@section('page_title', 'Branch Orders')
+@section('page_subtitle', 'Track delivery and takeaway orders, receipts, and status updates for your branch.')
+
 @section('content')
-    <div class="container">
-        <h2 class="section-title">Branch Orders</h2>
-
-        <div class="list-block">
-            @forelse($orders as $order)
-                <div class="card">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-                        <h3 style="margin: 0;">Order #{{ $order->id }}</h3>
-
-                        @if($order->type === 'takeaway')
-                            <span style="background: #e0f2fe; color: #0369a1; padding: 0.25rem 0.6rem; border-radius: 4px; font-size: 0.85rem; font-weight: 600;">
-                                Takeaway
-                            </span>
-                        @else
-                            <span style="background: #f3e8ff; color: #7e22ce; padding: 0.25rem 0.6rem; border-radius: 4px; font-size: 0.85rem; font-weight: 600;">
-                                Delivery
-                            </span>
-                        @endif
+<div class="page-shell fade-up">
+    @if($orders->count())
+        <div class="stack-list">
+            @foreach($orders as $order)
+                <div class="entity-card">
+                    <div class="entity-card__header">
+                        <div>
+                            <h3 class="entity-card__title">Order #{{ $order->id }}</h3>
+                            <p>Receipt No: {{ $order->receipt_number ?? 'Not generated yet' }}</p>
+                        </div>
+                        <span class="badge {{ $order->type === 'takeaway' ? 'badge-info' : 'badge-purple' }}">{{ ucfirst($order->type) }}</span>
                     </div>
 
-                    <p><strong>Receipt No:</strong> {{ $order->receipt_number ?? 'Not generated yet' }}</p>
-                    <p><strong>Customer:</strong> {{ $order->customer->name }}</p>
-                    <p><strong>Branch:</strong> {{ $order->storeFront->name }} - {{ $order->storeFront->branch_name }}</p>
-                    <p><strong>Current Status:</strong> {{ ucfirst(str_replace('_', ' ', $order->status)) }}</p>
-                    <p><strong>Payment:</strong> {{ $order->paid_at ? 'Paid' : 'Unpaid' }}</p>
-                    <p><strong>Total:</strong> {{ number_format($order->total_amount, 2) }}</p>
+                    <div class="entity-card__meta">
+                        <div class="entity-row"><span>Customer</span><strong>{{ $order->customer->name }}</strong></div>
+                        <div class="entity-row"><span>Branch</span><strong>{{ $order->storeFront->name }} - {{ $order->storeFront->branch_name }}</strong></div>
+                        <div class="entity-row"><span>Status</span><strong>{{ ucfirst(str_replace('_', ' ', $order->status)) }}</strong></div>
+                        <div class="entity-row"><span>Payment</span><strong>{{ $order->paid_at ? 'Paid' : 'Unpaid' }}</strong></div>
+                        <div class="entity-row"><span>Total</span><strong>{{ number_format($order->total_amount, 2) }}</strong></div>
+                    </div>
 
                     @if($order->type === 'delivery')
-                        <div style="margin-top: 1rem; background-color: #fafafa; padding: 1rem; border-radius: 6px; border-left: 4px solid #a855f7;">
-                            <h4 style="margin-top: 0; margin-bottom: 0.5rem; font-size: 0.95rem; color: #333;">Delivery Information</h4>
-                            <p><strong>Zone:</strong>
-                                {{ $order->delivery_zone === 'inside' ? 'Inside ' . $order->storeFront->delivery_city : 'Outside ' . $order->storeFront->delivery_city }}
-                            </p>
-                            <p><strong>Delivery Fee:</strong> {{ number_format($order->delivery_fee, 2) }}</p>
-                            <p><strong>Phone:</strong> {{ $order->delivery_phone }}</p>
-                            <p><strong>Address:</strong> {{ $order->delivery_address }}</p>
-
+                        <div class="order-item" style="margin-top:16px;">
+                            <strong>Delivery Information</strong><br>
+                            Zone: {{ $order->delivery_zone === 'inside' ? 'Inside ' . $order->storeFront->delivery_city : 'Outside ' . $order->storeFront->delivery_city }}<br>
+                            Delivery Fee: {{ number_format($order->delivery_fee, 2) }}<br>
+                            Phone: {{ $order->delivery_phone }}<br>
+                            Address: {{ $order->delivery_address }}<br>
                             @if($order->delivery_lat && $order->delivery_lng)
-                                <a href="https://www.google.com/maps/search/?api=1&query={{ $order->delivery_lat }},{{ $order->delivery_lng }}"
-                                   target="_blank"
-                                   style="display: inline-block; margin-top: 0.5rem; color: #007bff; font-weight: 600; text-decoration: underline;">
-                                   → Open in Google Maps
-                                </a>
+                                <a href="https://www.google.com/maps/search/?api=1&query={{ $order->delivery_lat }},{{ $order->delivery_lng }}" target="_blank" class="map-link">Open in Google Maps</a>
                             @endif
                         </div>
                     @endif
 
-                    <h4 class="mt-3">Items</h4>
-                    @foreach($order->orderItems as $orderItem)
-                        <p>
-                            {{ $orderItem->item->item_name ?? 'Item deleted' }}
-                            - Qty: {{ $orderItem->quantity }}
-                            - Price: {{ number_format($orderItem->price, 2) }}
-                        </p>
-                    @endforeach
-
-                    <div class="actions" style="margin: 12px 0;">
-                        <a href="{{ route('storefront.receipts.show', $order) }}" class="btn btn-secondary">
-                            View Receipt
-                        </a>
+                    <div class="order-items-list">
+                        @foreach($order->orderItems as $orderItem)
+                            <div class="order-item">
+                                <strong>{{ $orderItem->item->item_name ?? 'Item deleted' }}</strong><br>
+                                Qty: {{ $orderItem->quantity }} · Price: {{ number_format($orderItem->price, 2) }}
+                            </div>
+                        @endforeach
                     </div>
 
-                    <form method="POST" action="{{ route('storefront.orders.status.update', $order) }}">
+                    <div class="entity-actions">
+                        <a href="{{ route('storefront.receipts.show', $order) }}" class="btn btn-secondary">View Receipt</a>
+                    </div>
+
+                    <form method="POST" action="{{ route('storefront.orders.status.update', $order) }}" class="toolbar-row">
                         @csrf
-
-                        <div class="mb-3">
-                            <label>Update Status</label>
-                            <select name="status">
-                                @if($order->type === 'takeaway')
-                                    <option value="pending" {{ $order->status == 'pending' ? 'selected' : '' }}>Pending</option>
-                                    <option value="accepted" {{ $order->status == 'accepted' ? 'selected' : '' }}>Accepted</option>
-                                    <option value="handed_over" {{ $order->status == 'handed_over' ? 'selected' : '' }}>Handed Over</option>
-                                    <option value="cancelled" {{ $order->status == 'cancelled' ? 'selected' : '' }}>Cancelled</option>
-                                @else
-                                    <option value="pending" {{ $order->status == 'pending' ? 'selected' : '' }}>Pending</option>
-                                    <option value="accepted" {{ $order->status == 'accepted' ? 'selected' : '' }}>Accepted</option>
-                                    <option value="preparing" {{ $order->status == 'preparing' ? 'selected' : '' }}>Preparing</option>
-                                    <option value="ready" {{ $order->status == 'ready' ? 'selected' : '' }}>Ready</option>
-                                    <option value="delivered" {{ $order->status == 'delivered' ? 'selected' : '' }}>Delivered</option>
-                                    <option value="cancelled" {{ $order->status == 'cancelled' ? 'selected' : '' }}>Cancelled</option>
-                                @endif
-                            </select>
-                        </div>
-
-                        <button type="submit" class="btn btn-primary">Update</button>
+                        <select name="status">
+                            @if($order->type === 'takeaway')
+                                <option value="pending" {{ $order->status == 'pending' ? 'selected' : '' }}>Pending</option>
+                                <option value="accepted" {{ $order->status == 'accepted' ? 'selected' : '' }}>Accepted</option>
+                                <option value="handed_over" {{ $order->status == 'handed_over' ? 'selected' : '' }}>Handed Over</option>
+                                <option value="cancelled" {{ $order->status == 'cancelled' ? 'selected' : '' }}>Cancelled</option>
+                            @else
+                                <option value="pending" {{ $order->status == 'pending' ? 'selected' : '' }}>Pending</option>
+                                <option value="accepted" {{ $order->status == 'accepted' ? 'selected' : '' }}>Accepted</option>
+                                <option value="preparing" {{ $order->status == 'preparing' ? 'selected' : '' }}>Preparing</option>
+                                <option value="ready" {{ $order->status == 'ready' ? 'selected' : '' }}>Ready</option>
+                                <option value="delivered" {{ $order->status == 'delivered' ? 'selected' : '' }}>Delivered</option>
+                                <option value="cancelled" {{ $order->status == 'cancelled' ? 'selected' : '' }}>Cancelled</option>
+                            @endif
+                        </select>
+                        <button type="submit" class="btn btn-primary">Update Status</button>
                     </form>
                 </div>
-            @empty
-                <div class="card">
-                    <p>No orders available for your branch yet.</p>
-                </div>
-            @endforelse
+            @endforeach
         </div>
-    </div>
+    @else
+        <div class="empty-state">No orders available for your branch yet.</div>
+    @endif
+</div>
 @endsection

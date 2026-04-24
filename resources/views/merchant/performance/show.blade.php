@@ -1,31 +1,30 @@
 @extends('layouts.app')
 
+@section('page_title', 'Performance Details')
+@section('page_subtitle', 'Review store-level summary metrics and open detailed ratings or order analytics.')
+
 @section('content')
-    <div class="container">
-        <h2 class="section-title">Performance Details</h2>
-
-        <div class="card" style="margin-bottom: 20px;">
-            <h3>{{ $storeFront->name }}</h3>
-            <p><strong>Branch:</strong> {{ $storeFront->branch_name }}</p>
-            <p><strong>Location:</strong> {{ $storeFront->location }}</p>
-            <p><strong>Total Orders:</strong> {{ $summary['total_orders'] }}</p>
-            <p><strong>Total Sales:</strong> {{ number_format($summary['total_sales'], 2) }}</p>
-            <p><strong>Overall Average Rating:</strong> {{ number_format($summary['average_rating'] ?? 0, 2) }}</p>
-            <p><strong>Total Ratings:</strong> {{ $summary['total_reviews'] }}</p>
+<div class="page-shell fade-up">
+    <section class="section-card">
+        <div class="section-header">
+            <div>
+                <h2>{{ $storeFront->name }} - {{ $storeFront->branch_name }}</h2>
+                <p>{{ $storeFront->location }}</p>
+            </div>
+            <a href="{{ route('merchant.performance.index') }}" class="btn btn-ghost">Back to Performance List</a>
         </div>
 
-        <div class="actions" style="gap: 10px; flex-wrap: wrap;">
-            <a href="{{ route('merchant.performance.ratings', $storeFront) }}" class="btn btn-primary">
-                View Ratings
-            </a>
-
-            <a href="{{ route('merchant.performance.orders', $storeFront) }}" class="btn btn-primary">
-                View Orders
-            </a>
-
-            <a href="{{ route('merchant.performance.index') }}" class="btn btn-secondary">
-                Back to Performance List
-            </a>
+        <div class="metric-grid">
+            <div class="metric-card"><div class="metric-card__label">Total Orders</div><div class="metric-card__value">{{ $summary['total_orders'] }}</div></div>
+            <div class="metric-card"><div class="metric-card__label">Total Sales</div><div class="metric-card__value">{{ number_format($summary['total_sales'], 2) }}</div></div>
+            <div class="metric-card"><div class="metric-card__label">Average Rating</div><div class="metric-card__value">{{ number_format($summary['average_rating'] ?? 0, 2) }}</div></div>
+            <div class="metric-card"><div class="metric-card__label">Total Ratings</div><div class="metric-card__value">{{ $summary['total_reviews'] }}</div></div>
         </div>
-    </div>
+
+        <div class="entity-actions">
+            <a href="{{ route('merchant.performance.ratings', $storeFront) }}" class="btn btn-primary">View Ratings</a>
+            <a href="{{ route('merchant.performance.orders', $storeFront) }}" class="btn btn-secondary">View Orders</a>
+        </div>
+    </section>
+</div>
 @endsection
