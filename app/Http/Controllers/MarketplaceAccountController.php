@@ -6,6 +6,7 @@ use App\Models\MarketplaceAccount;
 use App\Models\MarketplaceSetting;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use App\Models\MarketplaceProduct;
 
 class MarketplaceAccountController extends Controller
 {
@@ -15,7 +16,12 @@ class MarketplaceAccountController extends Controller
         $setting = MarketplaceSetting::first();
         $account = $user->marketplaceAccount;
 
-        return view('customer.marketplace.account', compact('user', 'setting', 'account'));
+        $products = MarketplaceProduct::with(['seller', 'seller.reportsReceived'])
+            ->where('is_active', true)
+            ->latest()
+            ->get();
+
+        return view('customer.marketplace.account', compact('user', 'setting', 'account', 'products'));
     }
 
     public function payAndActivate()

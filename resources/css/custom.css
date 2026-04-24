@@ -699,7 +699,8 @@ tr:hover td {
         radial-gradient(circle at right bottom, rgba(6, 95, 70, 0.10), transparent 26%),
         linear-gradient(180deg, var(--bg) 0%, var(--bg-soft) 100%);
     position: relative;
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: auto;
 }
 
 .guest-bg-shape {

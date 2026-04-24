@@ -10,9 +10,19 @@
         @if($account && $account->is_eligible)
             <p style="color: green; font-weight: bold;">Your marketplace account is active. You can now buy and sell in the marketplace.</p>
 
-            <a href="{{ route('customer.marketplace.products.index') }}">Browse Marketplace Products</a><br><br>
-            <a href="{{ route('customer.marketplace.products.create') }}">List a Product for Sale</a><br><br>
-            <a href="{{ route('customer.marketplace.products.my-products') }}">My Marketplace Products</a>
+        <div class="actions">
+            <a href="{{ route('customer.marketplace.products.index') }}" class="btn btn-primary">
+                Browse Marketplace Products
+            </a>
+
+            <a href="{{ route('customer.marketplace.products.create') }}" class="btn btn-secondary">
+                List a Product for Sale
+            </a>
+
+            <a href="{{ route('customer.marketplace.products.my-products') }}" class="btn btn-secondary">
+                My Marketplace Products
+            </a>
+        </div>
         @else
             <p>You need to pay the marketplace registration fee to become eligible for selling.</p>
 

@@ -21,7 +21,7 @@
         $fallbackTitle = ucwords(str_replace(['.', '-'], ' ', Route::currentRouteName() ?? 'dashboard'));
         $pageTitle = trim($__env->yieldContent('page_title')) ?: $fallbackTitle;
         $pageSubtitle = trim($__env->yieldContent('page_subtitle')) ?: (auth()->check()
-            ? 'Smarter store management with a cleaner interface.'
+            ? 'Smarter store management.'
             : 'A modern marketplace for buyers, merchants, and storefronts.');
     @endphp
 

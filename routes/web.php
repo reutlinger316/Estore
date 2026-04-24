@@ -26,6 +26,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ReceiptController;
 use App\Http\Controllers\RestockRequestController;
 use App\Http\Controllers\CustomerComboController;
+use App\Http\Controllers\UserReportController;
 
 Route::get('/', function () {
     if (auth()->check()) {
@@ -136,6 +137,12 @@ Route::middleware(['auth', 'active', 'role:customer'])->group(function () {
 
     Route::post('/customer/orders/{order}/order-again', [OrderController::class, 'orderAgain'])
         ->name('customer.orders.order-again');
+
+    Route::post('/customer/marketplace/sellers/{seller}/report', [UserReportController::class, 'store'])
+    ->name('customer.marketplace.sellers.report');
+
+    Route::get('/customer/marketplace/sellers/{seller}/report', [UserReportController::class, 'create'])
+    ->name('customer.marketplace.sellers.report.form');
 });
 
 Route::middleware(['auth', 'active', 'role:merchant'])->group(function () {

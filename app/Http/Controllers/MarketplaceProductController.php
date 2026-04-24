@@ -22,7 +22,8 @@ class MarketplaceProductController extends Controller
     public function create()
     {
         if (!Auth::user()->hasMarketplaceEligibility()) {
-            abort(403, 'You are not eligible to sell in the marketplace.');
+            return redirect()->route('customer.marketplace.account')
+            ->with('error', 'Please become eligible first');
         }
 
         return view('customer.marketplace.products.create');
@@ -31,7 +32,8 @@ class MarketplaceProductController extends Controller
     public function store(Request $request)
     {
         if (!Auth::user()->hasMarketplaceEligibility()) {
-            abort(403, 'You are not eligible to sell in the marketplace.');
+            return redirect()->route('customer.marketplace.account')
+            ->with('error', 'Please become eligible first');
         }
 
         $validated = $request->validate([
@@ -66,7 +68,8 @@ class MarketplaceProductController extends Controller
     public function myProducts()
     {
         if (!Auth::user()->hasMarketplaceEligibility()) {
-            abort(403, 'You are not eligible to sell in the marketplace.');
+            return redirect()->route('customer.marketplace.account')
+            ->with('error', 'Please become eligible first');
         }
 
         $products = MarketplaceProduct::where('seller_id', Auth::id())

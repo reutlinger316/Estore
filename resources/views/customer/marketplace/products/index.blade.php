@@ -19,6 +19,24 @@
                 <p><strong>Price:</strong> {{ number_format($product->price, 2) }} Tk</p>
                 <p><strong>Stock:</strong> {{ $product->stock }}</p>
                 <p>{{ $product->description }}</p>
+                @if($product->seller_id !== auth()->id())
+                    @php
+                        $alreadyReported = $product->seller
+                            ->reportsReceived
+                            ->where('reporter_id', auth()->id())
+                            ->isNotEmpty();
+                    @endphp
+
+                    @if($alreadyReported)
+                        <span class="badge badge-warning">Seller already reported</span>
+                    @else
+                        <a href="{{ route('customer.marketplace.sellers.report.form', $product->seller) }}"
+                        class="btn btn-ghost"
+                        style="margin-top: 10px;">
+                            Report Seller
+                        </a>
+                    @endif
+                @endif
             </div>
         @empty
             <p>No marketplace products available yet.</p>

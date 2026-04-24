@@ -64,6 +64,23 @@
                 >
             </div>
 
+
+            <div class="form-group">
+                <label for="role">Role</label>
+
+                <select name="role" id="role" class="form-control" required>
+                    <option value="">Select Role</option>
+                    <option value="customer" {{ old('role') == 'customer' ? 'selected' : '' }}>Customer</option>
+                    <option value="merchant" {{ old('role') == 'merchant' ? 'selected' : '' }}>Merchant</option>
+                    <option value="storefront" {{ old('role') == 'storefront' ? 'selected' : '' }}>StoreFront</option>
+                </select>
+
+                @error('role')
+                    <span class="text-danger">{{ $message }}</span>
+                @enderror
+            </div>
+
+
             <button type="submit" class="btn btn-primary auth-submit">Register</button>
         </form>
 

@@ -45,4 +45,14 @@ class User extends Authenticatable
     {
         return (bool) optional($this->marketplaceAccount)->is_eligible;
     }
+
+    public function reportsMade()
+    {
+        return $this->hasMany(\App\Models\UserReport::class, 'reporter_id');
+    }
+
+    public function reportsReceived()
+    {
+        return $this->hasMany(\App\Models\UserReport::class, 'reported_user_id');
+    }
 }
