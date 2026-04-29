@@ -55,4 +55,23 @@ class User extends Authenticatable
     {
         return $this->hasMany(\App\Models\UserReport::class, 'reported_user_id');
     }
+    public function marketplaceTradesAsBuyer()
+{
+    return $this->hasMany(\App\Models\MarketplaceTrade::class, 'buyer_id');
+}
+
+    public function marketplaceTradesAsSeller()
+    {
+        return $this->hasMany(\App\Models\MarketplaceTrade::class, 'seller_id');
+    }
+
+    public function marketplacePurchases()
+    {
+        return $this->hasMany(\App\Models\MarketplaceOrder::class, 'buyer_id');
+    }
+
+    public function marketplaceSales()
+    {
+        return $this->hasMany(\App\Models\MarketplaceOrder::class, 'seller_id');
+    }
 }

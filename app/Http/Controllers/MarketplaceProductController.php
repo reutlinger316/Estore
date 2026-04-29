@@ -11,7 +11,7 @@ class MarketplaceProductController extends Controller
 {
     public function index()
     {
-        $products = MarketplaceProduct::with('seller')
+        $products = MarketplaceProduct::with(['seller.reportsReceived', 'activeTrade'])
             ->where('is_active', true)
             ->latest()
             ->get();
@@ -69,10 +69,11 @@ class MarketplaceProductController extends Controller
     {
         if (!Auth::user()->hasMarketplaceEligibility()) {
             return redirect()->route('customer.marketplace.account')
-            ->with('error', 'Please become eligible first');
+                ->with('error', 'Please become eligible first');
         }
 
-        $products = MarketplaceProduct::where('seller_id', Auth::id())
+        $products = MarketplaceProduct::with('activeTrade')
+            ->where('seller_id', Auth::id())
             ->latest()
             ->get();
 

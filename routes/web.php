@@ -27,6 +27,7 @@ use App\Http\Controllers\ReceiptController;
 use App\Http\Controllers\RestockRequestController;
 use App\Http\Controllers\CustomerComboController;
 use App\Http\Controllers\UserReportController;
+use App\Http\Controllers\MarketplaceTradeController;
 
 Route::get('/', function () {
     if (auth()->check()) {
@@ -143,6 +144,42 @@ Route::middleware(['auth', 'active', 'role:customer'])->group(function () {
 
     Route::get('/customer/marketplace/sellers/{seller}/report', [UserReportController::class, 'create'])
     ->name('customer.marketplace.sellers.report.form');
+
+    Route::post('/customer/marketplace/products/{product}/buy-now', [MarketplaceTradeController::class, 'buyNow'])
+    ->name('customer.marketplace.products.buy-now');
+
+    Route::post('/customer/marketplace/products/{product}/bargain', [MarketplaceTradeController::class, 'start'])
+        ->name('customer.marketplace.products.bargain');
+
+    Route::get('/customer/marketplace/my-trades', [MarketplaceTradeController::class, 'myTrades'])
+        ->name('customer.marketplace.my-trades');
+
+    Route::get('/customer/marketplace/seller-trades', [MarketplaceTradeController::class, 'sellerTrades'])
+        ->name('customer.marketplace.seller-trades');
+
+    Route::post('/customer/marketplace/trades/{trade}/accept', [MarketplaceTradeController::class, 'accept'])
+        ->name('customer.marketplace.trades.accept');
+
+    Route::post('/customer/marketplace/trades/{trade}/reject', [MarketplaceTradeController::class, 'reject'])
+        ->name('customer.marketplace.trades.reject');
+
+    Route::post('/customer/marketplace/trades/{trade}/counter', [MarketplaceTradeController::class, 'counter'])
+        ->name('customer.marketplace.trades.counter');
+
+    Route::post('/customer/marketplace/trades/{trade}/accept-counter', [MarketplaceTradeController::class, 'acceptCounter'])
+        ->name('customer.marketplace.trades.accept-counter');
+
+    Route::post('/customer/marketplace/trades/{trade}/cancel', [MarketplaceTradeController::class, 'cancel'])
+        ->name('customer.marketplace.trades.cancel');
+
+    Route::post('/customer/marketplace/trades/{trade}/complete', [MarketplaceTradeController::class, 'complete'])
+        ->name('customer.marketplace.trades.complete');
+
+    Route::get('/customer/marketplace/purchases', [MarketplaceTradeController::class, 'purchases'])
+        ->name('customer.marketplace.purchases');
+
+    Route::get('/customer/marketplace/sales', [MarketplaceTradeController::class, 'sales'])
+        ->name('customer.marketplace.sales');
 });
 
 Route::middleware(['auth', 'active', 'role:merchant'])->group(function () {

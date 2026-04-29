@@ -25,4 +25,21 @@ class MarketplaceProduct extends Model
     {
         return $this->belongsTo(User::class, 'seller_id');
     }
+
+    public function trades()
+    {
+        return $this->hasMany(MarketplaceTrade::class, 'marketplace_product_id');
+    }
+
+    public function orders()
+    {
+        return $this->hasMany(MarketplaceOrder::class, 'marketplace_product_id');
+    }
+
+    public function activeTrade()
+    {
+        return $this->hasOne(MarketplaceTrade::class, 'marketplace_product_id')
+            ->whereIn('status', ['pending', 'countered', 'accepted'])
+            ->latestOfMany();
+    }
 }

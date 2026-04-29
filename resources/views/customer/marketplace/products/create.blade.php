@@ -1,28 +1,55 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="container">
-        <h2>Sell a Product in Marketplace</h2>
+<div class="customer-dashboard-page fade-up">
+    <section class="dashboard-action-box">
+        <div class="dashboard-action-box__header">
+            <h2>Sell a Marketplace Product</h2>
+            <p>Add a product that other customers can buy or bargain for.</p>
+        </div>
 
-        <form method="POST" action="{{ route('customer.marketplace.products.store') }}" enctype="multipart/form-data">
+        <div class="dashboard-action-grid marketplace-actions-grid">
+            <a href="{{ route('customer.marketplace.products.index') }}" class="dashboard-action-btn">
+                <span class="dashboard-action-btn__title">Back to Marketplace</span>
+                <span class="dashboard-action-btn__subtitle">Browse products</span>
+            </a>
+
+            <a href="{{ route('customer.marketplace.products.my-products') }}" class="dashboard-action-btn">
+                <span class="dashboard-action-btn__title">My Products</span>
+                <span class="dashboard-action-btn__subtitle">Manage listings</span>
+            </a>
+        </div>
+    </section>
+
+    <section class="dashboard-action-box">
+        @if($errors->any())
+            <div class="alert alert-danger">
+                @foreach($errors->all() as $error)
+                    <div>{{ $error }}</div>
+                @endforeach
+            </div>
+        @endif
+
+        <form method="POST" action="{{ route('customer.marketplace.products.store') }}" enctype="multipart/form-data" class="marketplace-form-card">
             @csrf
 
-            <label>Product Name:</label><br>
-            <input type="text" name="name"><br><br>
+            <label>Product Name</label>
+            <input type="text" name="name" value="{{ old('name') }}" required>
 
-            <label>Description:</label><br>
-            <textarea name="description"></textarea><br><br>
+            <label>Description</label>
+            <textarea name="description" placeholder="Write product description...">{{ old('description') }}</textarea>
 
-            <label>Price:</label><br>
-            <input type="number" step="0.01" min="0" name="price"><br><br>
+            <label>Price</label>
+            <input type="number" name="price" step="0.01" min="0" value="{{ old('price') }}" required>
 
-            <label>Stock:</label><br>
-            <input type="number" min="1" name="stock"><br><br>
+            <label>Stock</label>
+            <input type="number" name="stock" min="1" value="{{ old('stock', 1) }}" required>
 
-            <label>Image:</label><br>
-            <input type="file" name="image" accept="image/*"><br><br>
+            <label>Image</label>
+            <input type="file" name="image" accept="image/*">
 
-            <button type="submit">List Product</button>
+            <button type="submit" class="marketplace-primary-btn">Create Product</button>
         </form>
-    </div>
+    </section>
+</div>
 @endsection

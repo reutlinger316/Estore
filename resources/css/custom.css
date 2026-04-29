@@ -1753,3 +1753,297 @@ html[data-theme="dark"] .marketplace-glow-btn--alt {
         0 18px 36px rgba(16, 185, 129, 0.18),
         0 0 0 1px rgba(255,255,255,0.08) inset;
 }
+.marketplace-actions-grid {
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+}
+
+.marketplace-product-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.marketplace-product-card {
+    border: 1px solid rgba(148, 163, 184, 0.28);
+    border-radius: 22px;
+    background: rgba(255, 255, 255, 0.72);
+    box-shadow: 0 14px 30px rgba(15, 23, 42, 0.08);
+    overflow: hidden;
+}
+
+.marketplace-product-summary {
+    cursor: pointer;
+    list-style: none;
+    padding: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.marketplace-product-summary::-webkit-details-marker {
+    display: none;
+}
+
+.marketplace-product-summary__left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.marketplace-product-summary h3 {
+    margin: 0 0 6px;
+    color: var(--text-strong);
+}
+
+.marketplace-product-summary p {
+    margin: 2px 0;
+    color: var(--text-soft);
+}
+
+.marketplace-product-thumb {
+    width: 86px;
+    height: 86px;
+    object-fit: cover;
+    border-radius: 18px;
+}
+
+.marketplace-product-chevron {
+    padding: 10px 16px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #1e3a8a 0%, #065f46 100%);
+    color: #fff;
+    font-weight: 800;
+    font-size: 0.85rem;
+}
+
+.marketplace-product-card[open] .marketplace-product-chevron {
+    background: linear-gradient(135deg, #065f46 0%, #0f172a 100%);
+}
+
+.marketplace-product-body {
+    padding: 18px;
+    border-top: 1px solid rgba(148, 163, 184, 0.22);
+}
+
+.marketplace-form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+    margin: 18px 0;
+}
+
+.marketplace-form-card {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 16px;
+    border-radius: 18px;
+    background: rgba(248, 250, 252, 0.86);
+}
+
+.marketplace-form-card label {
+    font-weight: 800;
+    color: var(--text-strong);
+}
+
+.marketplace-form-card input,
+.marketplace-form-card textarea {
+    width: 100%;
+    border: 1px solid rgba(148, 163, 184, 0.35);
+    border-radius: 14px;
+    padding: 12px 14px;
+    background: #fff;
+}
+
+.marketplace-form-card textarea {
+    min-height: 110px;
+    resize: vertical;
+}
+
+.marketplace-primary-btn {
+    border: 0;
+    border-radius: 16px;
+    padding: 12px 16px;
+    background: linear-gradient(135deg, #1e3a8a 0%, #065f46 100%);
+    color: #fff;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.marketplace-warning {
+    color: #b45309;
+    font-weight: 800;
+}
+
+@media (max-width: 800px) {
+    .marketplace-form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .marketplace-product-summary,
+    .marketplace-product-summary__left {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+}
+.marketplace-actions-grid {
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+}
+
+.marketplace-product-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.marketplace-product-card {
+    border: 1px solid rgba(148, 163, 184, 0.28);
+    border-radius: 22px;
+    background: rgba(255, 255, 255, 0.72);
+    box-shadow: 0 14px 30px rgba(15, 23, 42, 0.08);
+    overflow: hidden;
+}
+
+.marketplace-product-summary {
+    cursor: pointer;
+    list-style: none;
+    padding: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.marketplace-product-summary::-webkit-details-marker {
+    display: none;
+}
+
+.marketplace-product-summary__left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.marketplace-product-summary h3,
+.marketplace-product-body h3 {
+    margin: 0 0 6px;
+    color: var(--text-strong);
+}
+
+.marketplace-product-summary p,
+.marketplace-product-body p {
+    margin: 4px 0;
+    color: var(--text-soft);
+}
+
+.marketplace-product-thumb {
+    width: 86px;
+    height: 86px;
+    object-fit: cover;
+    border-radius: 18px;
+}
+
+.marketplace-product-chevron {
+    padding: 10px 16px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #1e3a8a 0%, #065f46 100%);
+    color: #fff;
+    font-weight: 800;
+    font-size: 0.85rem;
+}
+
+.marketplace-product-card[open] .marketplace-product-chevron {
+    background: linear-gradient(135deg, #065f46 0%, #0f172a 100%);
+}
+
+.marketplace-product-body {
+    padding: 18px;
+    border-top: 1px solid rgba(148, 163, 184, 0.22);
+}
+
+.marketplace-form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+    margin-top: 18px;
+}
+
+.marketplace-form-card {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 16px;
+    border-radius: 18px;
+    background: rgba(248, 250, 252, 0.86);
+}
+
+.marketplace-form-card label {
+    font-weight: 800;
+    color: var(--text-strong);
+}
+
+.marketplace-form-card input,
+.marketplace-form-card textarea {
+    width: 100%;
+    border: 1px solid rgba(148, 163, 184, 0.35);
+    border-radius: 14px;
+    padding: 12px 14px;
+    background: #fff;
+}
+
+.marketplace-form-card textarea {
+    min-height: 110px;
+    resize: vertical;
+}
+
+.marketplace-primary-btn,
+.marketplace-danger-btn,
+.marketplace-secondary-btn {
+    border: 0;
+    border-radius: 16px;
+    padding: 12px 16px;
+    color: #fff;
+    font-weight: 800;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+}
+
+.marketplace-primary-btn {
+    background: linear-gradient(135deg, #1e3a8a 0%, #065f46 100%);
+}
+
+.marketplace-secondary-btn {
+    background: linear-gradient(135deg, #334155 0%, #0f172a 100%);
+}
+
+.marketplace-danger-btn {
+    background: linear-gradient(135deg, #991b1b 0%, #7f1d1d 100%);
+}
+
+.marketplace-warning {
+    color: #b45309;
+    font-weight: 800;
+}
+
+.marketplace-status {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 999px;
+    background: rgba(15, 23, 42, 0.08);
+    color: var(--text-strong);
+    font-weight: 800;
+}
+
+@media (max-width: 800px) {
+    .marketplace-form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .marketplace-product-summary,
+    .marketplace-product-summary__left {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+}
