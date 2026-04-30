@@ -6,6 +6,7 @@ use App\Http\Controllers\AdminMarketplaceSettingController;
 use App\Http\Controllers\MarketplaceProductController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AdminUserController;
+use App\Http\Controllers\AdminUserReportController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CreditCardController;
@@ -231,7 +232,9 @@ Route::middleware(['auth', 'active', 'role:storefront'])->group(function () {
 Route::middleware(['auth', 'active', 'role:admin'])->group(function () {
     Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
     Route::get('/admin/users', [AdminUserController::class, 'index'])->name('admin.users.index');
+    Route::get('/admin/reports', [AdminUserReportController::class, 'index'])->name('admin.reports.index');
     Route::post('/admin/users/{user}/toggle-status', [AdminUserController::class, 'toggleStatus'])->name('admin.users.toggle-status');
+    Route::delete('/admin/users/{user}', [AdminUserController::class, 'destroy'])->name('admin.users.destroy');
     Route::get('/admin/marketplace/settings', [AdminMarketplaceSettingController::class, 'edit'])
         ->name('admin.marketplace.settings.edit');
 
@@ -249,6 +252,7 @@ Route::middleware(['auth', 'active', 'role:admin'])->group(function () {
     Route::get('/admin/users/banned', [AdminUserController::class, 'bannedUsers'])
         ->name('admin.users.banned');
 
+    Route::get('/admin/users/{user}', [AdminUserController::class, 'show'])->name('admin.users.show');
     Route::get('/admin/merchants/{merchant}/storefronts', [AdminMerchantStoreFrontController::class, 'show'])
         ->name('admin.merchants.storefronts');
     Route::get('/admin/marketplace/users', function () {

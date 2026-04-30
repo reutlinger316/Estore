@@ -10,6 +10,7 @@ class MarketplaceProduct extends Model
         'seller_id',
         'name',
         'description',
+        'category',
         'price',
         'stock',
         'image',

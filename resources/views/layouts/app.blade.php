@@ -49,6 +49,7 @@
                         @if($role === 'admin')
                             <a href="{{ route('admin.dashboard') }}" class="sidebar__link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}"><span>Admin Dashboard</span></a>
                             <a href="{{ route('admin.users.index') }}" class="sidebar__link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}"><span>Manage Users</span></a>
+                            <a href="{{ route('admin.reports.index') }}" class="sidebar__link {{ request()->routeIs('admin.reports.*') ? 'active' : '' }}"><span>User Reports</span></a>
                             <a href="{{ route('admin.users.storefronts') }}" class="sidebar__link {{ request()->routeIs('admin.users.storefronts') ? 'active' : '' }}"><span>Storefront Accounts</span></a>
                             <a href="{{ route('admin.marketplace.settings.edit') }}" class="sidebar__link {{ request()->routeIs('admin.marketplace.settings.*') ? 'active' : '' }}"><span>Marketplace Settings</span></a>
                             <a href="{{ route('admin.marketplace.users') }}" class="sidebar__link {{ request()->routeIs('admin.marketplace.users') ? 'active' : '' }}"><span>Marketplace Users</span></a>

@@ -36,6 +36,16 @@
             <label>Product Name</label>
             <input type="text" name="name" value="{{ old('name') }}" required>
 
+            <label>General Category</label>
+            <select name="category" required>
+                <option value="">Select a category</option>
+                @foreach($categories as $category)
+                    <option value="{{ $category }}" @selected(old('category') === $category)>
+                        {{ $category }}
+                    </option>
+                @endforeach
+            </select>
+
             <label>Description</label>
             <textarea name="description" placeholder="Write product description...">{{ old('description') }}</textarea>
 

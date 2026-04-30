@@ -41,6 +41,7 @@
             @forelse($products as $product)
                 <div class="marketplace-product-card marketplace-product-body">
                     <h3>{{ $product->name }}</h3>
+                    <p><strong>Category:</strong> {{ $product->category ?? 'Other' }}</p>
                     <p><strong>Price:</strong> {{ number_format($product->price, 2) }} Tk</p>
                     <p><strong>Stock:</strong> {{ $product->stock }}</p>
                     <p><strong>Status:</strong> {{ $product->is_active ? 'Active' : 'Inactive' }}</p>

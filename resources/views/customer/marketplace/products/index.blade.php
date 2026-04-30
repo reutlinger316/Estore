@@ -57,8 +57,36 @@
     <section class="dashboard-action-box">
         <div class="dashboard-action-box__header">
             <h2>Available Products</h2>
-            <p>Click a product to open buy and bargain options.</p>
+            <p>Search by product name or generalized terms like PC, computer, laptop, or electronics.</p>
         </div>
+
+        <form method="GET" action="{{ route('customer.marketplace.products.index') }}" class="marketplace-form-card">
+            <label>Search Marketplace</label>
+            <input
+                type="text"
+                name="search"
+                value="{{ $search ?? '' }}"
+                placeholder="Search by product name or generalized term, e.g. PC, electronics, laptop"
+            >
+
+            <label>Category</label>
+            <select name="category">
+                <option value="">All Categories</option>
+                @foreach($categories as $category)
+                    <option value="{{ $category }}" @selected(($categoryFilter ?? '') === $category)>
+                        {{ $category }}
+                    </option>
+                @endforeach
+            </select>
+
+            <button type="submit" class="marketplace-primary-btn">Search</button>
+
+            @if(!empty($search) || !empty($categoryFilter))
+                <a href="{{ route('customer.marketplace.products.index') }}" class="marketplace-secondary-btn">
+                    Clear Search
+                </a>
+            @endif
+        </form>
 
         <div class="marketplace-product-list">
             @forelse($products as $product)
@@ -72,6 +100,7 @@
                             <div>
                                 <h3>{{ $product->name }}</h3>
                                 <p><strong>Seller:</strong> {{ $product->seller->name ?? 'Unknown Seller' }}</p>
+                                <p><strong>Category:</strong> {{ $product->category ?? 'Other' }}</p>
                                 <p><strong>Price:</strong> {{ number_format($product->price, 2) }} Tk · <strong>Stock:</strong> {{ $product->stock }}</p>
                             </div>
                         </div>
@@ -136,7 +165,7 @@
                     </div>
                 </details>
             @empty
-                <p>No marketplace products available yet.</p>
+                <p>No marketplace products found.</p>
             @endforelse
         </div>
     </section>

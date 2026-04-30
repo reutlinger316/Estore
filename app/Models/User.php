@@ -14,6 +14,7 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
+        'status',
         'balance',
         'phone',
         'default_delivery_address',
@@ -26,11 +27,18 @@ class User extends Authenticatable
         'remember_token',
     ];
 
+    protected $casts = [
+        'status' => 'boolean',
+        'balance' => 'decimal:2',
+        'default_delivery_lat' => 'decimal:7',
+        'default_delivery_lng' => 'decimal:7',
+    ];
 
     public function creditCards()
     {
         return $this->hasMany(CreditCard::class);
     }
+
     public function marketplaceAccount()
     {
         return $this->hasOne(\App\Models\MarketplaceAccount::class);
@@ -55,10 +63,11 @@ class User extends Authenticatable
     {
         return $this->hasMany(\App\Models\UserReport::class, 'reported_user_id');
     }
+
     public function marketplaceTradesAsBuyer()
-{
-    return $this->hasMany(\App\Models\MarketplaceTrade::class, 'buyer_id');
-}
+    {
+        return $this->hasMany(\App\Models\MarketplaceTrade::class, 'buyer_id');
+    }
 
     public function marketplaceTradesAsSeller()
     {

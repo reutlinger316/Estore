@@ -1,31 +1,49 @@
 @extends('layouts.app')
 
+@section('page_title', 'Banned Users')
+@section('page_subtitle', 'Review restricted accounts, reports, and activity before reactivation or deletion.')
+
 @section('content')
-    <div class="container">
-        <h2>Admin - Banned Users</h2>
+<section class="panel">
+    <div class="section-heading"><div><h3>Banned Users</h3><p>These users cannot access protected areas until reactivated.</p></div></div>
 
-        <div style="margin-bottom: 20px;">
-            <a href="{{ route('admin.users.index') }}"><button>All Users</button></a>
-            <a href="{{ route('admin.users.customers') }}"><button>Customers</button></a>
-            <a href="{{ route('admin.users.merchants') }}"><button>Merchants</button></a>
-            <a href="{{ route('admin.users.storefronts') }}"><button>Storefronts</button></a>
-            <a href="{{ route('admin.users.banned') }}"><button>Banned Users</button></a>
-        </div>
+    <form method="GET" action="{{ route('admin.users.banned') }}" style="display:flex; gap:12px; margin-bottom:20px; flex-wrap:wrap;">
+        <input type="text" name="search" value="{{ $search ?? '' }}" placeholder="Search by username, email, or role" style="flex:1; min-width:260px; padding:12px 14px; border-radius:14px; border:1px solid #d8e0ec;">
+        <button type="submit" class="btn btn-primary">Search</button>
+        @if(!empty($search))<a href="{{ route('admin.users.banned') }}" class="btn btn-ghost">Clear</a>@endif
+        <a href="{{ route('admin.users.index') }}" class="btn btn-ghost">All Users</a>
+    </form>
+</section>
 
-        @forelse($users as $user)
-            <div style="border:1px solid #ddd; padding:12px; margin-bottom:12px;">
-                <p><strong>Name:</strong> {{ $user->name }}</p>
-                <p><strong>Email:</strong> {{ $user->email }}</p>
-                <p><strong>Role:</strong> {{ ucfirst($user->role) }}</p>
-                <p><strong>Status:</strong> Banned</p>
+@if($users->count())
+    <div class="card-grid">
+        @foreach($users as $user)
+            <article class="stat-card">
+                <div style="display:flex; justify-content:space-between; gap:12px; align-items:flex-start;">
+                    <div><h3>{{ $user->name }}</h3><p>{{ $user->email }}</p></div>
+                    <span style="font-size:12px; font-weight:700; color:#dc2626; background:#fee2e2; padding:6px 10px; border-radius:999px;">Banned</span>
+                </div>
 
-                <form method="POST" action="{{ route('admin.users.toggle-status', $user) }}">
-                    @csrf
-                    <button type="submit">Activate Account</button>
-                </form>
-            </div>
-        @empty
-            <p>No banned users found.</p>
-        @endforelse
+                <div class="stat-row"><span>Role</span><strong>{{ ucfirst($user->role) }}</strong></div>
+                <div class="stat-row"><span>Balance</span><strong>{{ number_format($user->balance ?? 0, 2) }}</strong></div>
+                <div class="stat-row"><span>Reports Received</span><strong>{{ $user->reports_received_count ?? $user->reportsReceived()->count() }}</strong></div>
+
+                <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:16px;">
+                    <a href="{{ route('admin.users.show', $user) }}" class="btn btn-ghost">View Activity</a>
+                    <form method="POST" action="{{ route('admin.users.toggle-status', $user) }}">
+                        @csrf
+                        <button type="submit" class="btn btn-primary" onclick="return confirm('Are you sure you want to activate this user?')">Activate</button>
+                    </form>
+                    <form method="POST" action="{{ route('admin.users.destroy', $user) }}">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn btn-danger" onclick="return confirm('Delete this user permanently?')">Delete</button>
+                    </form>
+                </div>
+            </article>
+        @endforeach
     </div>
+@else
+    <section class="panel"><p>No banned users found.</p></section>
+@endif
 @endsection

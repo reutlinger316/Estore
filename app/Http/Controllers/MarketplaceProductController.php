@@ -9,14 +9,48 @@ use Illuminate\Support\Facades\Storage;
 
 class MarketplaceProductController extends Controller
 {
-    public function index()
+    private array $categories = [
+        'Electronics' => ['pc', 'computer', 'desktop', 'laptop', 'phone', 'mobile', 'tablet', 'monitor', 'keyboard', 'mouse', 'charger', 'headphone', 'earphone', 'camera', 'printer'],
+        'Furniture' => ['chair', 'table', 'desk', 'sofa', 'bed', 'wardrobe', 'cabinet', 'shelf'],
+        'Fashion' => ['shirt', 't-shirt', 'pant', 'jeans', 'shoe', 'watch', 'bag', 'dress', 'jacket'],
+        'Books' => ['book', 'novel', 'textbook', 'guide', 'magazine', 'comic'],
+        'Sports' => ['bat', 'ball', 'racket', 'football', 'cricket', 'jersey', 'gym', 'fitness'],
+        'Home & Kitchen' => ['plate', 'spoon', 'cookware', 'oven', 'blender', 'mixer', 'rice cooker', 'pan', 'pot'],
+        'Vehicles' => ['cycle', 'bicycle', 'bike', 'motorbike', 'car', 'helmet', 'parts'],
+        'Beauty & Personal Care' => ['cream', 'lotion', 'perfume', 'makeup', 'skincare', 'hair', 'trimmer'],
+        'Toys & Games' => ['toy', 'game', 'puzzle', 'doll', 'console'],
+        'Other' => [],
+    ];
+
+    public function index(Request $request)
     {
+        $search = trim((string) $request->input('search', ''));
+        $categoryFilter = $request->input('category');
+
         $products = MarketplaceProduct::with(['seller.reportsReceived', 'activeTrade'])
             ->where('is_active', true)
+            ->when($categoryFilter, function ($query) use ($categoryFilter) {
+                $query->where('category', $categoryFilter);
+            })
+            ->when($search !== '', function ($query) use ($search) {
+                $matchingCategories = $this->matchingCategoriesForSearch($search);
+
+                $query->where(function ($q) use ($search, $matchingCategories) {
+                    $q->where('name', 'like', "%{$search}%")
+                        ->orWhere('description', 'like', "%{$search}%")
+                        ->orWhere('category', 'like', "%{$search}%");
+
+                    if (!empty($matchingCategories)) {
+                        $q->orWhereIn('category', $matchingCategories);
+                    }
+                });
+            })
             ->latest()
             ->get();
 
-        return view('customer.marketplace.products.index', compact('products'));
+        $categories = array_keys($this->categories);
+
+        return view('customer.marketplace.products.index', compact('products', 'categories', 'search', 'categoryFilter'));
     }
 
     public function create()
@@ -26,7 +60,9 @@ class MarketplaceProductController extends Controller
             ->with('error', 'Please become eligible first');
         }
 
-        return view('customer.marketplace.products.create');
+        $categories = array_keys($this->categories);
+
+        return view('customer.marketplace.products.create', compact('categories'));
     }
 
     public function store(Request $request)
@@ -39,6 +75,7 @@ class MarketplaceProductController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
+            'category' => 'required|string|in:' . implode(',', array_keys($this->categories)),
             'price' => 'required|numeric|min:0',
             'stock' => 'required|integer|min:1',
             'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
@@ -54,6 +91,7 @@ class MarketplaceProductController extends Controller
             'seller_id' => Auth::id(),
             'name' => $validated['name'],
             'description' => $validated['description'] ?? null,
+            'category' => $validated['category'],
             'price' => $validated['price'],
             'stock' => $validated['stock'],
             'image' => $imagePath,
@@ -78,5 +116,34 @@ class MarketplaceProductController extends Controller
             ->get();
 
         return view('customer.marketplace.products.my_products', compact('products'));
+    }
+
+    private function matchingCategoriesForSearch(string $search): array
+    {
+        $search = strtolower(trim($search));
+
+        if ($search === '') {
+            return [];
+        }
+
+        $matches = [];
+
+        foreach ($this->categories as $category => $keywords) {
+            if (str_contains(strtolower($category), $search)) {
+                $matches[] = $category;
+                continue;
+            }
+
+            foreach ($keywords as $keyword) {
+                $keyword = strtolower($keyword);
+
+                if (str_contains($keyword, $search) || str_contains($search, $keyword)) {
+                    $matches[] = $category;
+                    break;
+                }
+            }
+        }
+
+        return array_values(array_unique($matches));
     }
 }
