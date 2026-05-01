@@ -2,10 +2,10 @@
 ## Short Description
 E‑Store is a web‑based store management system built with the Laravel stack. Our target is to commence everyday store management through the website/app.
 The platform enables:
-- **Customers** to purchase products
-- **Merchants** to manage stores
-- **Stores** to manage items
-- **Admins** to oversee and maintain the system
+- **Customers** to add credit cards, manage own funds, browse storefronts, order items, order item combos, reorder items, use and earn loyalty points and access marketplace to sell own products.
+- **Merchants** to manage storefronts, items within storefronts, select discounts for items, track and control performance of storefronts, collect all balance from storefronts and manage storefront inventory via restock-requests.
+- **Stores** to manage items, list items (for sale and pre order), list delivery and pick up option for items on sale and update item and order status.
+- **Admins** to supervise users accross the platform based on roles, to moderate and ban users, to ensure safety of conduct in marketplace, to oversee user activity and history.
 
 ## Documentation
 - [SRS Document](https://docs.google.com/document/d/1pMkhuLY6L6oTY5pTK6bvGt_cfU370DBiOVKj5g4XOeA/edit?tab=t.0#heading=h.j8oo9afgojbh)  
@@ -18,7 +18,7 @@ The platform enables:
 - **Md. Minhaz Ibne Zaman** — 23201357  
 
 ## Tech Stack
-- **Frontend:** Laravel (Blade, HTML)  
-- **Backend:** Laravel (PHP)  
-- **Styling:** Tailwind CSS  
-- **Database:** MySQL
+- **Frontend:** Laravel (Blade), HTML (CSS), JAVASCRIPT
+- **Backend:** Laravel (PHP), NODE JS, VITE
+- **Styling:** Tailwind CSS
+- **Database:** MySQLite
