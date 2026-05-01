@@ -3,10 +3,15 @@
 @section('content')
 <div class="customer-dashboard-page fade-up">
     <section class="dashboard-action-box">
-        <div class="dashboard-action-box__header">
-            <h2>Customer Marketplace</h2>
+    <div class="shop-hero">
+        <div class="shop-hero-text">
+            <h1>Customer Marketplace</h1>
             <p>Browse products, buy directly, or send bargain requests.</p>
         </div>
+        <div class="shop-hero-anim">
+            <lottie-player src="{{ asset('animations/Trade.json') }}" background="transparent" speed="1" style="width: 160px; height: 160px;" loop autoplay></lottie-player>
+        </div>
+    </div>
 
         @if(session('success'))
             <div class="alert alert-success">{{ session('success') }}</div>
@@ -61,31 +66,38 @@
         </div>
 
         <form method="GET" action="{{ route('customer.marketplace.products.index') }}" class="marketplace-form-card">
-            <label>Search Marketplace</label>
-            <input
-                type="text"
-                name="search"
-                value="{{ $search ?? '' }}"
-                placeholder="Search by product name or generalized term, e.g. PC, electronics, laptop"
-            >
+            <div class="form-group">
+                <label>Search Marketplace</label>
+                <input
+                    type="text"
+                    name="search"
+                    value="{{ $search ?? '' }}"
+                    placeholder="Search by product name or generalized term, e.g. PC, electronics, laptop"
+                    class="form-control"
+                >
+            </div>
 
-            <label>Category</label>
-            <select name="category">
-                <option value="">All Categories</option>
-                @foreach($categories as $category)
-                    <option value="{{ $category }}" @selected(($categoryFilter ?? '') === $category)>
-                        {{ $category }}
-                    </option>
-                @endforeach
-            </select>
+            <div class="form-group">
+                <label>Category</label>
+                <select name="category" class="form-control">
+                    <option value="">All Categories</option>
+                    @foreach($categories as $category)
+                        <option value="{{ $category }}" @selected(($categoryFilter ?? '') === $category)>
+                            {{ $category }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
 
-            <button type="submit" class="marketplace-primary-btn">Search</button>
+            <div class="button-group" style="margin-top: 10px;">
+                <button type="submit" class="btn btn-primary">Search</button>
 
-            @if(!empty($search) || !empty($categoryFilter))
-                <a href="{{ route('customer.marketplace.products.index') }}" class="marketplace-secondary-btn">
-                    Clear Search
-                </a>
-            @endif
+                @if(!empty($search) || !empty($categoryFilter))
+                    <a href="{{ route('customer.marketplace.products.index') }}" class="btn btn-ghost">
+                        Clear Search
+                    </a>
+                @endif
+            </div>
         </form>
 
         <div class="marketplace-product-list">
@@ -123,25 +135,33 @@
                                     <form method="POST" action="{{ route('customer.marketplace.products.buy-now', $product) }}" class="marketplace-form-card">
                                         @csrf
 
-                                        <label>Quantity</label>
-                                        <input type="number" name="quantity" min="1" max="{{ $product->stock }}" value="1" required>
+                                        <div class="form-group">
+                                            <label>Quantity</label>
+                                            <input type="number" name="quantity" min="1" max="{{ $product->stock }}" value="1" class="form-control" required>
+                                        </div>
 
-                                        <button type="submit" class="marketplace-primary-btn">Buy Now</button>
+                                        <button type="submit" class="btn btn-primary">Buy Now</button>
                                     </form>
 
                                     <form method="POST" action="{{ route('customer.marketplace.products.bargain', $product) }}" class="marketplace-form-card">
                                         @csrf
 
-                                        <label>Quantity</label>
-                                        <input type="number" name="quantity" min="1" max="{{ $product->stock }}" value="1" required>
+                                        <div class="form-group">
+                                            <label>Quantity</label>
+                                            <input type="number" name="quantity" min="1" max="{{ $product->stock }}" value="1" class="form-control" required>
+                                        </div>
 
-                                        <label>Your Offer Price Per Item</label>
-                                        <input type="number" name="buyer_offer_price" step="0.01" min="1" required>
+                                        <div class="form-group">
+                                            <label>Your Offer Price Per Item</label>
+                                            <input type="number" name="buyer_offer_price" step="0.01" min="1" class="form-control" required>
+                                        </div>
 
-                                        <label>Message</label>
-                                        <textarea name="buyer_message" placeholder="Write your bargain message..."></textarea>
+                                        <div class="form-group">
+                                            <label>Message</label>
+                                            <textarea name="buyer_message" placeholder="Write your bargain message..." class="form-control"></textarea>
+                                        </div>
 
-                                        <button type="submit" class="marketplace-primary-btn">Send Bargain Request</button>
+                                        <button type="submit" class="btn btn-primary">Send Bargain Request</button>
                                     </form>
                                 </div>
                             @endif

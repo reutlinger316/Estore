@@ -24,7 +24,7 @@
             <label>Note (optional):</label><br>
             <textarea name="note" rows="4"></textarea><br><br>
 
-            <button type="submit">Send Request</button>
+            <button type="submit" class="btn btn-primary">Send Request</button>
         </form>
     </div>
 @endsection

@@ -33,7 +33,7 @@
             <input type="hidden" name="status" value="{{ $status }}">
         @endif
 
-        <input type="text" name="search" value="{{ $search ?? '' }}" placeholder="Search by username, email, or role" style="flex:1; min-width:260px; padding:12px 14px; border-radius:14px; border:1px solid #d8e0ec;">
+        <input type="text" name="search" value="{{ $search ?? '' }}" placeholder="Search by username, email, or role" class="form-control" style="flex:1; min-width:260px;">
 
         <button type="submit" class="btn btn-primary">Search</button>
 
@@ -62,9 +62,9 @@
                     </div>
 
                     @if($user->status)
-                        <span style="font-size:12px; font-weight:700; color:#047857; background:#d1fae5; padding:6px 10px; border-radius:999px;">Active</span>
+                        <span class="badge badge-success">Active</span>
                     @else
-                        <span style="font-size:12px; font-weight:700; color:#dc2626; background:#fee2e2; padding:6px 10px; border-radius:999px;">Banned</span>
+                        <span class="badge badge-danger">Banned</span>
                     @endif
                 </div>
 

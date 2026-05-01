@@ -8,7 +8,7 @@
     <div class="section-heading"><div><h3>Banned Users</h3><p>These users cannot access protected areas until reactivated.</p></div></div>
 
     <form method="GET" action="{{ route('admin.users.banned') }}" style="display:flex; gap:12px; margin-bottom:20px; flex-wrap:wrap;">
-        <input type="text" name="search" value="{{ $search ?? '' }}" placeholder="Search by username, email, or role" style="flex:1; min-width:260px; padding:12px 14px; border-radius:14px; border:1px solid #d8e0ec;">
+        <input type="text" name="search" value="{{ $search ?? '' }}" placeholder="Search by username, email, or role" class="form-control" style="flex:1; min-width:260px;">
         <button type="submit" class="btn btn-primary">Search</button>
         @if(!empty($search))<a href="{{ route('admin.users.banned') }}" class="btn btn-ghost">Clear</a>@endif
         <a href="{{ route('admin.users.index') }}" class="btn btn-ghost">All Users</a>
@@ -21,7 +21,7 @@
             <article class="stat-card">
                 <div style="display:flex; justify-content:space-between; gap:12px; align-items:flex-start;">
                     <div><h3>{{ $user->name }}</h3><p>{{ $user->email }}</p></div>
-                    <span style="font-size:12px; font-weight:700; color:#dc2626; background:#fee2e2; padding:6px 10px; border-radius:999px;">Banned</span>
+                    <span class="badge badge-danger">Banned</span>
                 </div>
 
                 <div class="stat-row"><span>Role</span><strong>{{ ucfirst($user->role) }}</strong></div>

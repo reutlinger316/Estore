@@ -14,7 +14,7 @@
     @endphp
 
     <div class="container" style="max-width: 900px; margin: 0 auto;">
-        <div class="card" style="padding: 24px; border: 1px solid #ddd; border-radius: 10px; background: #fff;">
+        <div class="card" style="padding: 24px;">
             <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 20px; flex-wrap: wrap; margin-bottom: 20px;">
                 <div>
                     <h2 style="margin: 0 0 8px 0;">Order Receipt</h2>
@@ -65,7 +65,7 @@
             <div style="overflow-x: auto;">
                 <table style="width: 100%; border-collapse: collapse;">
                     <thead>
-                        <tr style="background: #f5f5f5;">
+                        <tr>
                             <th style="border: 1px solid #ddd; padding: 10px; text-align: left;">Item</th>
                             <th style="border: 1px solid #ddd; padding: 10px; text-align: center;">Qty</th>
                             <th style="border: 1px solid #ddd; padding: 10px; text-align: right;">Unit Price</th>
@@ -104,6 +104,28 @@
                         <p style="display: flex; justify-content: space-between; margin: 8px 0;">
                             <span><strong>Delivery Fee:</strong></span>
                             <span>{{ number_format($order->delivery_fee, 2) }}</span>
+                        </p>
+                    @endif
+
+                    @if($order->points_redeemed > 0)
+                        <p style="display: flex; justify-content: space-between; margin: 8px 0; color: green;">
+                            <span><strong>Loyalty Discount ({{ number_format($order->points_discount_percent, 2) }}%):</strong></span>
+                            <span>-{{ number_format($order->points_discount_amount, 2) }}</span>
+                        </p>
+                        <p style="display: flex; justify-content: space-between; margin: 8px 0;">
+                            <span><strong>Points Redeemed:</strong></span>
+                            <span>{{ $order->points_redeemed }} {{ $order->points_owner_type === 'merchant' ? 'merchant' : 'global' }} points</span>
+                        </p>
+                    @endif
+
+                    @if($order->global_points_earned > 0 || $order->merchant_points_earned > 0)
+                        <p style="display: flex; justify-content: space-between; margin: 8px 0;">
+                            <span><strong>Global Points Earned:</strong></span>
+                            <span>{{ $order->global_points_earned }}</span>
+                        </p>
+                        <p style="display: flex; justify-content: space-between; margin: 8px 0;">
+                            <span><strong>Merchant Points Earned:</strong></span>
+                            <span>{{ $order->merchant_points_earned }}</span>
                         </p>
                     @endif
 

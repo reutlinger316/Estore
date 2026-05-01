@@ -3,7 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ config('app.name', 'E-Store') }}</title>
+    <title>{{ config('app.name', 'E-Store') }} — Electronics Marketplace</title>
+    <meta name="description" content="Premium electronics marketplace for buyers, merchants, and storefronts.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
     <script>
         (function () {
             const savedTheme = localStorage.getItem('theme');
@@ -53,12 +58,14 @@
                             <a href="{{ route('admin.users.storefronts') }}" class="sidebar__link {{ request()->routeIs('admin.users.storefronts') ? 'active' : '' }}"><span>Storefront Accounts</span></a>
                             <a href="{{ route('admin.marketplace.settings.edit') }}" class="sidebar__link {{ request()->routeIs('admin.marketplace.settings.*') ? 'active' : '' }}"><span>Marketplace Settings</span></a>
                             <a href="{{ route('admin.marketplace.users') }}" class="sidebar__link {{ request()->routeIs('admin.marketplace.users') ? 'active' : '' }}"><span>Marketplace Users</span></a>
+                            <a href="{{ route('admin.loyalty-points.index') }}" class="sidebar__link {{ request()->routeIs('admin.loyalty-points.*') ? 'active' : '' }}"><span>Loyalty Points</span></a>
                         @elseif($role === 'merchant')
                             <a href="{{ route('merchant.dashboard') }}" class="sidebar__link {{ request()->routeIs('merchant.dashboard') ? 'active' : '' }}"><span>Merchant Dashboard</span></a>
                             <a href="{{ route('merchant.storefronts.index') }}" class="sidebar__link {{ request()->routeIs('merchant.storefronts.*') ? 'active' : '' }}"><span>Manage Storefronts</span></a>
                             <a href="{{ route('merchant.discounts.index') }}" class="sidebar__link {{ request()->routeIs('merchant.discounts.*') ? 'active' : '' }}"><span>Discounts</span></a>
                             <a href="{{ route('merchant.restock-requests.index') }}" class="sidebar__link {{ request()->routeIs('merchant.restock-requests.*') ? 'active' : '' }}"><span>Restock Requests</span></a>
                             <a href="{{ route('merchant.performance.index') }}" class="sidebar__link {{ request()->routeIs('merchant.performance.*') ? 'active' : '' }}"><span>Performance</span></a>
+                            <a href="{{ route('merchant.loyalty-points.index') }}" class="sidebar__link {{ request()->routeIs('merchant.loyalty-points.*') ? 'active' : '' }}"><span>Loyalty Points</span></a>
                         @elseif($role === 'storefront')
                             <a href="{{ route('storefront.dashboard') }}" class="sidebar__link {{ request()->routeIs('storefront.dashboard') ? 'active' : '' }}"><span>Storefront Dashboard</span></a>
                             <a href="{{ route('storefront.branch-requests') }}" class="sidebar__link {{ request()->routeIs('storefront.branch-requests') ? 'active' : '' }}"><span>Branch Requests</span></a>
@@ -68,6 +75,7 @@
                             <a href="{{ route('customer.shops.index') }}" class="sidebar__link {{ request()->routeIs('customer.shops.*') ? 'active' : '' }}"><span>Browse Shops</span></a>
                             <a href="{{ route('customer.cart.index') }}" class="sidebar__link {{ request()->routeIs('customer.cart.*') ? 'active' : '' }}"><span>My Cart</span></a>
                             <a href="{{ route('customer.orders.index') }}" class="sidebar__link {{ request()->routeIs('customer.orders.*') ? 'active' : '' }}"><span>My Orders</span></a>
+                            <a href="{{ route('customer.loyalty-points.index') }}" class="sidebar__link {{ request()->routeIs('customer.loyalty-points.*') ? 'active' : '' }}"><span>My Loyalty Points</span></a>
                             <a href="{{ route('customer.creditcards.index') }}" class="sidebar__link {{ request()->routeIs('customer.creditcards.*') ? 'active' : '' }}"><span>Credit Cards</span></a>
                             <a href="{{ route('customer.funds.index') }}" class="sidebar__link {{ request()->routeIs('customer.funds.*') ? 'active' : '' }}"><span>Manage Funds</span></a>
                             <a href="{{ route('customer.marketplace.account') }}" class="sidebar__link {{ request()->routeIs('customer.marketplace.account') ? 'active' : '' }}"><span>Marketplace Account</span></a>

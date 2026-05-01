@@ -13,7 +13,7 @@
                         <div>
                             <h3 class="entity-card__title">
                                 {{ $acc->user->name }}
-                                <span style="font-size:12px; font-weight:700; color:#dc2626; background:#fee2e2; padding:4px 8px; border-radius:999px; margin-left:8px;">
+                                <span class="badge badge-danger" style="margin-left: 8px;">
                                     {{ $acc->user->reports_received_count ?? $acc->user->reportsReceived()->count() }} reports
                                 </span>
                             </h3>

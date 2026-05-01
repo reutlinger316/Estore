@@ -12,6 +12,14 @@ class Order extends Model
         'receipt_number',
         'receipt_generated_at',
         'total_amount',
+        'subtotal_before_points',
+        'points_redeemed',
+        'points_discount_amount',
+        'points_discount_percent',
+        'points_owner_type',
+        'points_merchant_id',
+        'global_points_earned',
+        'merchant_points_earned',
         'status',
         'paid_at',
         'type',
@@ -29,6 +37,9 @@ class Order extends Model
             'paid_at' => 'datetime',
             'receipt_generated_at' => 'datetime',
             'total_amount' => 'decimal:2',
+            'subtotal_before_points' => 'decimal:2',
+            'points_discount_amount' => 'decimal:2',
+            'points_discount_percent' => 'decimal:2',
             'delivery_fee' => 'decimal:2',
         ];
     }
@@ -51,6 +62,16 @@ class Order extends Model
     public function transactions()
     {
         return $this->hasMany(Transaction::class);
+    }
+
+    public function loyaltyPointTransactions()
+    {
+        return $this->hasMany(LoyaltyPointTransaction::class);
+    }
+
+    public function pointsMerchant()
+    {
+        return $this->belongsTo(User::class, 'points_merchant_id');
     }
 
     public function getItemsSubtotalAttribute(): float

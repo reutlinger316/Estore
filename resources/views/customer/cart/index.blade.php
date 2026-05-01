@@ -8,18 +8,24 @@
     <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
 
     <div class="container">
-        <h2 class="section-title">My Cart</h2>
-
-        @if($cart->storeFront)
-            <div class="card">
-                <p><strong>Cart Shop:</strong> {{ $cart->storeFront->name }} - {{ $cart->storeFront->branch_name }}</p>
-                <p>
-                    <strong>Delivery Pricing:</strong>
-                    Inside {{ $cart->storeFront->delivery_city }} = {{ number_format($cart->storeFront->inside_delivery_fee, 2) }},
-                    Outside {{ $cart->storeFront->delivery_city }} = {{ number_format($cart->storeFront->outside_delivery_fee, 2) }}
-                </p>
+        <div class="shop-hero">
+            <div class="shop-hero-text">
+                <h1>My Cart</h1>
+                @if($cart && $cart->storeFront)
+                    <p style="font-size: 1.15rem; margin-bottom: 5px;"><strong>Shop:</strong> {{ $cart->storeFront->name }} - {{ $cart->storeFront->branch_name }}</p>
+                    <p style="font-size: 0.95rem; opacity: 0.8;">
+                        <strong>Delivery Pricing:</strong> 
+                        Inside {{ $cart->storeFront->delivery_city }} = {{ number_format($cart->storeFront->inside_delivery_fee, 2) }}, 
+                        Outside {{ $cart->storeFront->delivery_city }} = {{ number_format($cart->storeFront->outside_delivery_fee, 2) }}
+                    </p>
+                @else
+                    <p>Your cart is currently empty or unassigned.</p>
+                @endif
             </div>
-        @endif
+            <div class="shop-hero-anim">
+                <lottie-player src="{{ asset('animations/Landing Page.json') }}" background="transparent" speed="1" style="width: 160px; height: 160px;" loop autoplay></lottie-player>
+            </div>
+        </div>
 
         @php $itemsTotal = 0; @endphp
 
@@ -79,8 +85,45 @@
                 <h3>Delivery Fee: <span id="delivery_fee_text">0.00</span></h3>
                 <h3>Grand Total: <span id="grand_total">{{ number_format($itemsTotal, 2) }}</span></h3>
 
+                <div style="margin-top:15px; padding:15px; border:1px solid var(--border-soft); background:var(--surface-soft); border-radius:12px;">
+                    <h4 style="margin-top:0;">Use Loyalty Points</h4>
+                    <p style="margin-bottom:8px;"><strong>Global Points:</strong> {{ $globalWallet->points ?? 0 }}</p>
+                    @if($cart->storeFront)
+                        <p style="margin-bottom:8px;"><strong>Merchant Points for this shop:</strong> {{ $merchantWallet->points ?? 0 }}</p>
+                    @endif
+                    <p style="margin-bottom:8px;"><strong>Point Discount:</strong> <span id="points_discount_text">0.00</span></p>
+                </div>
+
                 <form method="POST" action="{{ route('customer.cart.checkout') }}" style="margin-top: 20px;">
                     @csrf
+
+                    <div style="margin-bottom: 15px; padding: 15px; border: 1px solid var(--border-soft); background: var(--surface-soft); border-radius: 12px;">
+                        <p><strong>Redeem Loyalty Points:</strong></p>
+
+                        <label style="display:block; margin-bottom:8px; cursor:pointer;">
+                            <input type="radio" name="loyalty_redeem_rule_id" value="" data-owner="" data-percent="0" checked onchange="updateDeliveryFee()">
+                            Do not use points
+                        </label>
+
+                        @foreach($globalRedeemRules as $rule)
+                            <label style="display:block; margin-bottom:8px; cursor:pointer;">
+                                <input type="radio" name="loyalty_redeem_rule_id" value="{{ $rule->id }}" data-owner="admin" data-percent="{{ (float) $rule->discount_percent }}" onchange="updateDeliveryFee()" {{ ($globalWallet->points ?? 0) < $rule->points_required ? 'disabled' : '' }}>
+                                Global: {{ $rule->points_required }} points = {{ number_format($rule->discount_percent, 2) }}% off
+                                @if(($globalWallet->points ?? 0) < $rule->points_required) (not enough points) @endif
+                            </label>
+                        @endforeach
+
+                        @foreach($merchantRedeemRules as $rule)
+                            <label style="display:block; margin-bottom:8px; cursor:pointer;">
+                                <input type="radio" name="loyalty_redeem_rule_id" value="{{ $rule->id }}" data-owner="merchant" data-percent="{{ (float) $rule->discount_percent }}" onchange="updateDeliveryFee()" {{ ($merchantWallet->points ?? 0) < $rule->points_required ? 'disabled' : '' }}>
+                                Merchant: {{ $rule->points_required }} points = {{ number_format($rule->discount_percent, 2) }}% off
+                                @if(($merchantWallet->points ?? 0) < $rule->points_required) (not enough points) @endif
+                            </label>
+                        @endforeach
+
+                        <input type="hidden" name="loyalty_owner_type" id="loyalty_owner_type" value="">
+                        <small>You can redeem either global points or merchant points for one order, not both.</small>
+                    </div>
 
                     <div style="margin-bottom: 15px;">
                         <p><strong>Order Type:</strong></p>
@@ -94,7 +137,7 @@
                         </label>
                     </div>
 
-                    <div id="delivery_details" style="display: none; margin-top: 15px; padding: 15px; border: 1px solid #ddd; background-color: #f9f9f9; border-radius: 5px;">
+                    <div id="delivery_details" style="display: none; margin-top: 15px; padding: 15px; border: 1px solid var(--border-soft); background: var(--surface-soft); border-radius: 12px;">
                         <h4 style="margin-top: 0; margin-bottom: 15px;">Delivery Information</h4>
 
                         <div style="margin-bottom: 15px;">
@@ -142,6 +185,7 @@
                                 <label style="font-weight: bold; margin: 0;">Pin Location on Map:</label>
                                 <button
                                     type="button"
+                                    class="btn btn-secondary"
                                     onclick="getCurrentLocation(this)"
                                     style="background: #28a745; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-weight: bold;"
                                 >
@@ -184,8 +228,15 @@
                 }
             }
 
+            const selectedRedeem = document.querySelector('input[name="loyalty_redeem_rule_id"]:checked');
+            const discountPercent = selectedRedeem ? parseFloat(selectedRedeem.dataset.percent || 0) : 0;
+            const pointsDiscount = Math.min((itemsTotal * discountPercent) / 100, itemsTotal);
+            const ownerType = selectedRedeem ? (selectedRedeem.dataset.owner || '') : '';
+
+            document.getElementById('loyalty_owner_type').value = ownerType;
             document.getElementById('delivery_fee_text').innerText = fee.toFixed(2);
-            document.getElementById('grand_total').innerText = (itemsTotal + fee).toFixed(2);
+            document.getElementById('points_discount_text').innerText = pointsDiscount.toFixed(2);
+            document.getElementById('grand_total').innerText = ((itemsTotal - pointsDiscount) + fee).toFixed(2);
         }
 
         function toggleDelivery() {

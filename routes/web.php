@@ -29,6 +29,9 @@ use App\Http\Controllers\RestockRequestController;
 use App\Http\Controllers\CustomerComboController;
 use App\Http\Controllers\UserReportController;
 use App\Http\Controllers\MarketplaceTradeController;
+use App\Http\Controllers\AdminLoyaltyPointController;
+use App\Http\Controllers\MerchantLoyaltyPointController;
+use App\Http\Controllers\CustomerLoyaltyPointController;
 
 Route::get('/', function () {
     if (auth()->check()) {
@@ -78,6 +81,7 @@ Route::middleware(['auth', 'active', 'role:customer'])->group(function () {
     Route::post('/customer/cart/add/{item}', [CartController::class, 'add'])->name('customer.cart.add');
     Route::delete('/customer/cart/remove/{cartItem}', [CartController::class, 'remove'])->name('customer.cart.remove');
     Route::post('/customer/cart/checkout', [CartController::class, 'checkout'])->name('customer.cart.checkout');
+    Route::get('/customer/loyalty-points', [CustomerLoyaltyPointController::class, 'index'])->name('customer.loyalty-points.index');
     Route::get('/customer/orders', [OrderController::class, 'index'])->name('customer.orders.index');
     Route::post('/customer/orders/{order}/order-again', [OrderController::class, 'orderAgain'])
     ->name('customer.orders.order-again');
@@ -210,6 +214,12 @@ Route::middleware(['auth', 'active', 'role:merchant'])->group(function () {
     Route::get('/merchant/performance/{storeFront}/ratings', [MerchantStoreFrontPerformanceController::class, 'ratings'])->name('merchant.performance.ratings');
     Route::get('/merchant/performance/{storeFront}/orders', [MerchantStoreFrontPerformanceController::class, 'orders'])->name('merchant.performance.orders');
 
+    Route::get('/merchant/loyalty-points', [MerchantLoyaltyPointController::class, 'index'])->name('merchant.loyalty-points.index');
+    Route::post('/merchant/loyalty-points/setting', [MerchantLoyaltyPointController::class, 'updateSetting'])->name('merchant.loyalty-points.setting.update');
+    Route::post('/merchant/loyalty-points/rules', [MerchantLoyaltyPointController::class, 'storeRule'])->name('merchant.loyalty-points.rules.store');
+    Route::put('/merchant/loyalty-points/rules/{rule}', [MerchantLoyaltyPointController::class, 'updateRule'])->name('merchant.loyalty-points.rules.update');
+    Route::delete('/merchant/loyalty-points/rules/{rule}', [MerchantLoyaltyPointController::class, 'destroyRule'])->name('merchant.loyalty-points.rules.destroy');
+
     Route::post('/merchant/storefronts/{storeFront}/toggle-combos', [MerchantStoreFrontController::class, 'toggleComboSettings'])
     ->name('merchant.storefronts.toggle-combos');
     
@@ -231,6 +241,12 @@ Route::middleware(['auth', 'active', 'role:storefront'])->group(function () {
 });
 Route::middleware(['auth', 'active', 'role:admin'])->group(function () {
     Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+    Route::get('/admin/loyalty-points', [AdminLoyaltyPointController::class, 'index'])->name('admin.loyalty-points.index');
+    Route::post('/admin/loyalty-points/setting', [AdminLoyaltyPointController::class, 'updateSetting'])->name('admin.loyalty-points.setting.update');
+    Route::post('/admin/loyalty-points/rules', [AdminLoyaltyPointController::class, 'storeRule'])->name('admin.loyalty-points.rules.store');
+    Route::put('/admin/loyalty-points/rules/{rule}', [AdminLoyaltyPointController::class, 'updateRule'])->name('admin.loyalty-points.rules.update');
+    Route::delete('/admin/loyalty-points/rules/{rule}', [AdminLoyaltyPointController::class, 'destroyRule'])->name('admin.loyalty-points.rules.destroy');
+
     Route::get('/admin/users', [AdminUserController::class, 'index'])->name('admin.users.index');
     Route::get('/admin/reports', [AdminUserReportController::class, 'index'])->name('admin.reports.index');
     Route::post('/admin/users/{user}/toggle-status', [AdminUserController::class, 'toggleStatus'])->name('admin.users.toggle-status');

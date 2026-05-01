@@ -13,9 +13,9 @@
     </div>
 
     <form method="GET" action="{{ route('admin.reports.index') }}" style="display:flex; gap:12px; margin-bottom:20px; flex-wrap:wrap;">
-        <input type="text" name="search" value="{{ $search ?? '' }}" placeholder="Search by reporter, reported user, email, or reason" style="flex:1; min-width:260px; padding:12px 14px; border-radius:14px; border:1px solid #d8e0ec;">
+        <input type="text" name="search" value="{{ $search ?? '' }}" placeholder="Search by reporter, reported user, email, or reason" class="form-control" style="flex:1; min-width:260px;">
 
-        <select name="sort" style="padding:12px 14px; border-radius:14px; border:1px solid #d8e0ec;">
+        <select name="sort" class="form-control" style="width: auto;">
             <option value="latest" @selected($sort === 'latest')>Latest first</option>
             <option value="oldest" @selected($sort === 'oldest')>Oldest first</option>
             <option value="reported_user" @selected($sort === 'reported_user')>Reported user</option>
