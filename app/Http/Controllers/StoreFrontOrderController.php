@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
+use App\Models\OrderItem;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -48,6 +49,12 @@ class StoreFrontOrderController extends Controller
                 ($order->type === 'takeaway' && $newStatus === 'handed_over') ||
                 ($order->type === 'delivery' && $newStatus === 'delivered');
 
+            $order->load('orderItems');
+
+            if ($isFinalSuccessfulStatus && $order->hasPendingPreOrderItems()) {
+                abort(422, 'This order contains preorder items that are not fulfilled yet.');
+            }
+
             if ($isFinalSuccessfulStatus && $order->paid_at === null) {
                 $customer = $order->customer;
 
@@ -82,5 +89,25 @@ class StoreFrontOrderController extends Controller
         });
 
         return back()->with('success', 'Order status updated successfully.');
+    }
+    public function fulfillPreOrderItem(OrderItem $orderItem)
+    {
+        $orderItem->load('order.storeFront');
+
+        if (!$orderItem->order->storeFront || $orderItem->order->storeFront->store_account_id !== Auth::id()) {
+            abort(403);
+        }
+
+        if (!$orderItem->is_pre_order) {
+            return back()->withErrors([
+                'preorder' => 'This item is not a preorder item.',
+            ]);
+        }
+
+        $orderItem->update([
+            'pre_order_status' => 'fulfilled',
+        ]);
+
+        return back()->with('success', 'Preorder item marked as fulfilled.');
     }
 }

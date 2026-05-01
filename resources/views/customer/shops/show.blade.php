@@ -55,8 +55,16 @@
                             <div style="background: var(--surface-strong); padding: 12px; border-radius: 12px; border: 1px solid var(--border-soft);">
                                 <label style="display: block; font-size: 0.9rem; margin-bottom: 8px; font-weight: 600;">
                                     {{ $item->item_name }} ({{ number_format($item->discounted_price, 2) }})
+                                    @if($item->is_pre_order)
+                                        <span style="color:#b7791f;"> · Pre-order</span>
+                                    @endif
                                 </label>
-                                <input type="number" min="0" name="items[{{ $item->id }}]" value="{{ old('items.' . $item->id, 0) }}" class="form-control" style="width: 100%;">
+                                @if($item->is_pre_order || $item->stock_quantity > 0)
+                                    <input type="number" min="0" name="items[{{ $item->id }}]" value="{{ old('items.' . $item->id, 0) }}" class="form-control" style="width: 100%;">
+                                @else
+                                    <input type="number" min="0" value="0" class="form-control" style="width: 100%;" disabled>
+                                    <small style="color:#dc2626;">Out of stock</small>
+                                @endif
                             </div>
                         @endforeach
                     </div>
@@ -184,7 +192,20 @@
                 @endif
             </p>
 
-            <p>Stock: {{ $item->stock_quantity }}</p>
+            @if($item->is_pre_order)
+                <div style="margin: 10px 0; padding: 10px; border: 1px solid #facc15; background: #fef9c3; border-radius: 8px;">
+                    <strong style="color: #92400e;">PRE-ORDER ITEM</strong>
+                    <p style="margin: 4px 0 0;">This item can be ordered before it is available in stock.</p>
+                    @if($item->pre_order_available_on)
+                        <p style="margin: 4px 0 0;"><strong>Expected availability:</strong> {{ $item->pre_order_available_on->format('M d, Y') }}</p>
+                    @endif
+                    @if($item->pre_order_note)
+                        <p style="margin: 4px 0 0;">{{ $item->pre_order_note }}</p>
+                    @endif
+                </div>
+            @else
+                <p>Stock: {{ $item->stock_quantity }}</p>
+            @endif
 
             @if($item->discount > 0)
                 <p>Discount: {{ number_format($item->discount, 2) }}%</p>
@@ -210,10 +231,16 @@
             @endif
 
             <div style="display: flex; gap: 10px; align-items: center; margin-top: 10px; flex-wrap: wrap;">
-                <form method="POST" action="{{ route('customer.cart.add', $item) }}" style="margin: 0;">
-                    @csrf
-                    <button type="submit" class="btn btn-primary">Add to Cart</button>
-                </form>
+                @if($item->is_pre_order || $item->stock_quantity > 0)
+                    <form method="POST" action="{{ route('customer.cart.add', $item) }}" style="margin: 0;">
+                        @csrf
+                        <button type="submit" class="btn btn-primary">
+                            {{ $item->is_pre_order ? 'Pre-order Now' : 'Add to Cart' }}
+                        </button>
+                    </form>
+                @else
+                    <button type="button" class="btn btn-secondary" disabled>Out of Stock</button>
+                @endif
 
                 @auth
                     @if(!$item->reviews->where('customer_id', auth()->id())->count())

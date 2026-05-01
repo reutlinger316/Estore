@@ -11,6 +11,16 @@ class OrderItem extends Model
         'item_id',
         'quantity',
         'price',
+        'is_pre_order',
+        'pre_order_available_on',
+        'pre_order_note',
+        'pre_order_status',
+    ];
+
+    protected $casts = [
+        'price' => 'decimal:2',
+        'is_pre_order' => 'boolean',
+        'pre_order_available_on' => 'date',
     ];
 
     public function order()

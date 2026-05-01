@@ -111,11 +111,13 @@ class CustomerComboController extends Controller
                     abort(422, 'One of the combo items is no longer available.');
                 }
 
-                if ($item->stock_quantity < $comboItem->quantity) {
+                if (!$item->is_pre_order && $item->stock_quantity < $comboItem->quantity) {
                     abort(422, "Sorry, '{$item->item_name}' only has {$item->stock_quantity} left in stock.");
                 }
 
-                $item->decrement('stock_quantity', $comboItem->quantity);
+                if (!$item->is_pre_order) {
+                    $item->decrement('stock_quantity', $comboItem->quantity);
+                }
 
                 $unitPrice = (float) $item->discounted_price;
                 $lineTotal = $unitPrice * $comboItem->quantity;
@@ -125,6 +127,10 @@ class CustomerComboController extends Controller
                     'item_id' => $item->id,
                     'quantity' => $comboItem->quantity,
                     'price' => $unitPrice,
+                    'is_pre_order' => $item->is_pre_order,
+                    'pre_order_available_on' => $item->pre_order_available_on,
+                    'pre_order_note' => $item->pre_order_note,
+                    'pre_order_status' => $item->is_pre_order ? 'pending' : 'normal',
                 ];
             }
 
@@ -160,6 +166,10 @@ class CustomerComboController extends Controller
                     'item_id' => $orderItemData['item_id'],
                     'quantity' => $orderItemData['quantity'],
                     'price' => $orderItemData['price'],
+                    'is_pre_order' => $orderItemData['is_pre_order'],
+                    'pre_order_available_on' => $orderItemData['pre_order_available_on'],
+                    'pre_order_note' => $orderItemData['pre_order_note'],
+                    'pre_order_status' => $orderItemData['pre_order_status'],
                 ]);
             }
 

@@ -55,12 +55,22 @@
                 </div>
                 <div class="form-group full-span">
                     <label class="checkbox-box">
-                        <input type="checkbox" name="is_pre_order" value="1" {{ $item->is_pre_order ? 'checked' : '' }}>
+                        <input type="checkbox" name="is_pre_order" value="1" {{ old('is_pre_order', $item->is_pre_order) ? 'checked' : '' }}>
                         <span>
                             <strong>Is Pre-order</strong><br>
                             <small>Keep this enabled if customers can place advance orders.</small>
                         </span>
                     </label>
+                </div>
+                <div class="form-group">
+                    <label>Pre-order Available On</label>
+                    <input type="date" name="pre_order_available_on" value="{{ old('pre_order_available_on', $item->pre_order_available_on ? $item->pre_order_available_on->format('Y-m-d') : '') }}">
+                    <small>Optional. Customers will see this expected availability date.</small>
+                </div>
+                <div class="form-group full-span">
+                    <label>Pre-order Note</label>
+                    <textarea name="pre_order_note" rows="3" placeholder="Example: Ships after Eid / Available next week">{{ old('pre_order_note', $item->pre_order_note) }}</textarea>
+                    <small>Optional. Add shipping or fulfillment information for customers.</small>
                 </div>
             </div>
 

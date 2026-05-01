@@ -16,12 +16,16 @@ class Item extends Model
         'low_stock_threshold',
         'discount',
         'is_pre_order',
+        'pre_order_available_on',
+        'pre_order_note',
         'is_listed',
     ];
 
     protected $casts = [
         'price' => 'decimal:2',
         'discount' => 'decimal:2',
+        'is_pre_order' => 'boolean',
+        'pre_order_available_on' => 'date',
     ];
 
     public function storeFront()
@@ -46,7 +50,23 @@ class Item extends Model
 
     public function isLowStock(): bool
     {
-        return $this->stock_quantity <= $this->low_stock_threshold;
+        return !$this->is_pre_order && $this->stock_quantity <= $this->low_stock_threshold;
+    }
+
+    public function canBeOrdered(int $quantity = 1): bool
+    {
+        return $this->is_pre_order || $this->stock_quantity >= $quantity;
+    }
+
+    public function getAvailabilityLabelAttribute(): string
+    {
+        if ($this->is_pre_order) {
+            return $this->pre_order_available_on
+                ? 'Pre-order · Available ' . $this->pre_order_available_on->format('M d, Y')
+                : 'Pre-order';
+        }
+
+        return $this->stock_quantity > 0 ? 'In stock' : 'Out of stock';
     }
 
     public function getDiscountAmountAttribute(): float

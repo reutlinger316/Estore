@@ -43,6 +43,27 @@
                             <div class="order-item">
                                 <strong>{{ $orderItem->item->item_name ?? 'Item deleted' }}</strong><br>
                                 Qty: {{ $orderItem->quantity }} · Price: {{ number_format($orderItem->price, 2) }}
+
+                                @if($orderItem->is_pre_order)
+                                    <div style="margin-top: 8px; padding: 10px; border: 1px solid #facc15; background: #fef9c3; border-radius: 8px;">
+                                        <strong style="color:#92400e;">Pre-order: {{ ucfirst($orderItem->pre_order_status) }}</strong>
+
+                                        @if($orderItem->pre_order_available_on)
+                                            <p style="margin: 4px 0 0;">Available {{ $orderItem->pre_order_available_on->format('M d, Y') }}</p>
+                                        @endif
+
+                                        @if($orderItem->pre_order_note)
+                                            <p style="margin: 4px 0 0;">{{ $orderItem->pre_order_note }}</p>
+                                        @endif
+
+                                        @if($orderItem->pre_order_status !== 'fulfilled')
+                                            <form method="POST" action="{{ route('storefront.preorder.fulfill', $orderItem) }}" style="margin-top: 8px;">
+                                                @csrf
+                                                <button type="submit" class="btn btn-primary">Mark Pre-order Fulfilled</button>
+                                            </form>
+                                        @endif
+                                    </div>
+                                @endif
                             </div>
                         @endforeach
                     </div>

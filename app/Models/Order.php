@@ -80,4 +80,16 @@ class Order extends Model
             return $orderItem->price * $orderItem->quantity;
         });
     }
+
+    public function hasPreOrderItems(): bool
+    {
+        return $this->orderItems->contains(fn ($orderItem) => $orderItem->is_pre_order);
+    }
+
+    public function hasPendingPreOrderItems(): bool
+    {
+        return $this->orderItems->contains(function ($orderItem) {
+            return $orderItem->is_pre_order && $orderItem->pre_order_status !== 'fulfilled';
+        });
+    }
 }

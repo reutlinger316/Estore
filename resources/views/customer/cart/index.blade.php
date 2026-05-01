@@ -61,6 +61,18 @@
                         <p><strong>Discount:</strong> {{ number_format($cartItem->item->discount, 2) }}%</p>
                     @endif
 
+                    @if($cartItem->item->is_pre_order)
+                        <div style="margin: 8px 0; padding: 8px; border: 1px solid #facc15; background: #fef9c3; border-radius: 8px;">
+                            <strong style="color:#92400e;">Pre-order</strong>
+                            @if($cartItem->item->pre_order_available_on)
+                                <p style="margin: 4px 0 0;">Available {{ $cartItem->item->pre_order_available_on->format('M d, Y') }}</p>
+                            @endif
+                            @if($cartItem->item->pre_order_note)
+                                <p style="margin: 4px 0 0;">{{ $cartItem->item->pre_order_note }}</p>
+                            @endif
+                        </div>
+                    @endif
+
                     <p><strong>Quantity:</strong> {{ $cartItem->quantity }}</p>
                     <p><strong>Subtotal:</strong> {{ number_format($subtotal, 2) }}</p>
 

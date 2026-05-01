@@ -82,6 +82,16 @@ class CartController extends Controller
             ->where('item_id', $item->id)
             ->first();
 
+        if (!$item->is_pre_order) {
+            $requestedQuantity = $cartItem ? $cartItem->quantity + 1 : 1;
+
+            if ($item->stock_quantity < $requestedQuantity) {
+                return back()->withErrors([
+                    'cart' => "Sorry, '{$item->item_name}' only has {$item->stock_quantity} left in stock.",
+                ]);
+            }
+        }
+
         if ($cartItem) {
             $cartItem->increment('quantity');
         } else {
@@ -164,11 +174,13 @@ class CartController extends Controller
                 foreach ($cartItems as $cartItem) {
                     $item = $cartItem->item()->lockForUpdate()->first();
 
-                    if ($item->stock_quantity < $cartItem->quantity) {
+                    if (!$item->is_pre_order && $item->stock_quantity < $cartItem->quantity) {
                         throw new \Exception("Sorry, '{$item->item_name}' only has {$item->stock_quantity} left in stock.");
                     }
 
-                    $item->decrement('stock_quantity', $cartItem->quantity);
+                    if (!$item->is_pre_order) {
+                        $item->decrement('stock_quantity', $cartItem->quantity);
+                    }
 
                     $originalPrice = (float) $item->price;
                     $discountPercent = (float) $item->discount;
@@ -182,6 +194,10 @@ class CartController extends Controller
                         'item_id' => $item->id,
                         'quantity' => $cartItem->quantity,
                         'price' => $discountedUnitPrice,
+                        'is_pre_order' => $item->is_pre_order,
+                        'pre_order_available_on' => $item->pre_order_available_on,
+                        'pre_order_note' => $item->pre_order_note,
+                        'pre_order_status' => $item->is_pre_order ? 'pending' : 'normal',
                     ];
                 }
 
@@ -286,6 +302,10 @@ class CartController extends Controller
                         'item_id' => $orderItemData['item_id'],
                         'quantity' => $orderItemData['quantity'],
                         'price' => $orderItemData['price'],
+                        'is_pre_order' => $orderItemData['is_pre_order'],
+                        'pre_order_available_on' => $orderItemData['pre_order_available_on'],
+                        'pre_order_note' => $orderItemData['pre_order_note'],
+                        'pre_order_status' => $orderItemData['pre_order_status'],
                     ]);
                 }
 

@@ -236,6 +236,7 @@ Route::middleware(['auth', 'active', 'role:storefront'])->group(function () {
     Route::get('/storefront/branches/{storeFront}/restock-requests/create', [RestockRequestController::class, 'create'])->name('storefront.restock-requests.create');
     Route::post('/storefront/branches/{storeFront}/restock-requests', [RestockRequestController::class, 'store'])->name('storefront.restock-requests.store');
     Route::post('/storefront/orders/{order}/status', [StoreFrontOrderController::class, 'updateStatus'])->name('storefront.orders.status.update');
+    Route::post('/storefront/order-items/{orderItem}/fulfill-preorder', [StoreFrontOrderController::class, 'fulfillPreOrderItem'])->name('storefront.preorder.fulfill');
     Route::get('/storefront/orders/{order}/receipt', [ReceiptController::class, 'storefrontShow'])
         ->name('storefront.receipts.show');
 });

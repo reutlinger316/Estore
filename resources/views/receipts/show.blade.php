@@ -77,6 +77,17 @@
                             <tr>
                                 <td style="border: 1px solid #ddd; padding: 10px;">
                                     {{ $orderItem->item->item_name ?? 'Item deleted' }}
+                                    @if($orderItem->is_pre_order)
+                                        <div style="margin-top: 6px; padding: 6px; border: 1px solid #facc15; background: #fef9c3; border-radius: 6px;">
+                                            <strong style="color:#92400e;">Pre-order: {{ ucfirst($orderItem->pre_order_status) }}</strong>
+                                            @if($orderItem->pre_order_available_on)
+                                                <div>Available {{ $orderItem->pre_order_available_on->format('M d, Y') }}</div>
+                                            @endif
+                                            @if($orderItem->pre_order_note)
+                                                <div>{{ $orderItem->pre_order_note }}</div>
+                                            @endif
+                                        </div>
+                                    @endif
                                 </td>
                                 <td style="border: 1px solid #ddd; padding: 10px; text-align: center;">
                                     {{ $orderItem->quantity }}

@@ -44,6 +44,8 @@ class MerchantItemController extends Controller
             'low_stock_threshold' => 'required|integer|min:1',
             'discount' => 'nullable|numeric|min:0',
             'is_pre_order' => 'nullable|boolean',
+            'pre_order_available_on' => 'nullable|date',
+            'pre_order_note' => 'nullable|string|max:1000',
         ]);
 
         $imagePath = null;
@@ -62,6 +64,8 @@ class MerchantItemController extends Controller
             'low_stock_threshold' => $request->low_stock_threshold,
             'discount' => $request->discount ?? 0,
             'is_pre_order' => $request->has('is_pre_order'),
+            'pre_order_available_on' => $request->has('is_pre_order') ? $request->pre_order_available_on : null,
+            'pre_order_note' => $request->has('is_pre_order') ? $request->pre_order_note : null,
             'is_listed' => true,
         ]);
 
@@ -92,6 +96,9 @@ class MerchantItemController extends Controller
             'stock_quantity' => 'required|integer|min:0',
             'low_stock_threshold' => 'required|integer|min:1',
             'discount' => 'nullable|numeric|min:0',
+            'is_pre_order' => 'nullable|boolean',
+            'pre_order_available_on' => 'nullable|date',
+            'pre_order_note' => 'nullable|string|max:1000',
         ]);
 
         $data = [
@@ -102,6 +109,8 @@ class MerchantItemController extends Controller
             'low_stock_threshold' => $request->low_stock_threshold,
             'discount' => $request->discount ?? 0,
             'is_pre_order' => $request->has('is_pre_order'),
+            'pre_order_available_on' => $request->has('is_pre_order') ? $request->pre_order_available_on : null,
+            'pre_order_note' => $request->has('is_pre_order') ? $request->pre_order_note : null,
         ];
 
         if ($request->hasFile('image')) {
