@@ -27,41 +27,50 @@ class CustomerShopController extends Controller
         return view('customer.shops.index', compact('shops'));
     }
 
-    public function show(StoreFront $storeFront)
+    public function show(Request $request, StoreFront $storeFront)
     {
-        if ($storeFront->confirmation_status !== 'accepted') {
-            abort(404);
-        }
+    if ($storeFront->confirmation_status !== 'accepted') {
+        abort(404);
+    }
 
-        $items = Item::with('reviews')
-            ->where('store_front_id', $storeFront->id)
-            ->where('is_listed', true)
-            ->get();
+    $menuSearch = trim($request->input('menu_search', ''));
 
-        $otherBranches = StoreFront::where('merchant_id', $storeFront->merchant_id)
-            ->where('id', '!=', $storeFront->id)
-            ->where('confirmation_status', 'accepted')
-            ->get();
+    $items = Item::with('reviews')
+        ->where('store_front_id', $storeFront->id)
+        ->where('is_listed', true)
+        ->when($menuSearch !== '', function ($query) use ($menuSearch) {
+            $query->where(function ($q) use ($menuSearch) {
+                $q->where('item_name', 'like', '%' . $menuSearch . '%')
+                    ->orWhere('description', 'like', '%' . $menuSearch . '%');
+            });
+        })
+        ->get();
 
-        $cart = Cart::where('customer_id', Auth::id())
-            ->with('cartItems.item')
-            ->first();
+    $otherBranches = StoreFront::where('merchant_id', $storeFront->merchant_id)
+        ->where('id', '!=', $storeFront->id)
+        ->where('confirmation_status', 'accepted')
+        ->get();
 
-        $cartCount = $cart ? $cart->cartItems->sum('quantity') : 0;
+    $cart = Cart::where('customer_id', Auth::id())
+        ->with('cartItems.item')
+        ->first();
 
-        $combos = CustomerCombo::with('comboItems.item')
-            ->where('customer_id', Auth::id())
-            ->where('store_front_id', $storeFront->id)
-            ->latest()
-            ->get();
+    $cartCount = $cart ? $cart->cartItems->sum('quantity') : 0;
 
-        return view('customer.shops.show', compact(
-            'storeFront',
-            'items',
-            'otherBranches',
-            'cart',
-            'cartCount',
-            'combos'
-        ));
+    $combos = CustomerCombo::with('comboItems.item')
+        ->where('customer_id', Auth::id())
+        ->where('store_front_id', $storeFront->id)
+        ->latest()
+        ->get();
+
+    return view('customer.shops.show', compact(
+        'storeFront',
+        'items',
+        'otherBranches',
+        'cart',
+        'cartCount',
+        'combos',
+        'menuSearch'
+    ));
     }
 }

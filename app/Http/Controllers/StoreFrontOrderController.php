@@ -11,17 +11,48 @@ use Illuminate\Support\Facades\DB;
 
 class StoreFrontOrderController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        $status = $request->input('status', 'all');
+        $search = trim($request->input('search', ''));
+
+        $validStatuses = [
+            'all',
+            'pending',
+            'accepted',
+            'preparing',
+            'ready',
+            'delivered',
+            'handed_over',
+            'cancelled',
+        ];
+
+        if (!in_array($status, $validStatuses, true)) {
+            $status = 'all';
+        }
+
         $orders = Order::whereHas('storeFront', function ($query) {
             $query->where('store_account_id', Auth::id())
                 ->where('confirmation_status', 'accepted');
         })
             ->with(['customer', 'storeFront', 'orderItems.item'])
+            ->when($status !== 'all', function ($query) use ($status) {
+                $query->where('status', $status);
+            })
+            ->when($search !== '', function ($query) use ($search) {
+                $query->where(function ($searchQuery) use ($search) {
+                    $searchQuery
+                        ->where('id', $search)
+                        ->orWhere('receipt_number', 'like', '%' . $search . '%')
+                        ->orWhereHas('customer', function ($customerQuery) use ($search) {
+                            $customerQuery->where('name', 'like', '%' . $search . '%');
+                        });
+                });
+            })
             ->latest()
             ->get();
 
-        return view('storefront.orders.index', compact('orders'));
+        return view('storefront.orders.index', compact('orders', 'status', 'search'));
     }
 
     public function updateStatus(Request $request, Order $order)
@@ -49,7 +80,7 @@ class StoreFrontOrderController extends Controller
                 ($order->type === 'takeaway' && $newStatus === 'handed_over') ||
                 ($order->type === 'delivery' && $newStatus === 'delivered');
 
-            $order->load('orderItems');
+            $order->load(['orderItems', 'customer', 'storeFront']);
 
             if ($isFinalSuccessfulStatus && $order->hasPendingPreOrderItems()) {
                 abort(422, 'This order contains preorder items that are not fulfilled yet.');
@@ -90,6 +121,7 @@ class StoreFrontOrderController extends Controller
 
         return back()->with('success', 'Order status updated successfully.');
     }
+
     public function fulfillPreOrderItem(OrderItem $orderItem)
     {
         $orderItem->load('order.storeFront');

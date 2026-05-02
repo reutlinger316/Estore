@@ -5,19 +5,28 @@ namespace App\Http\Controllers;
 use App\Models\Cart;
 use App\Models\CartItem;
 use App\Models\Order;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        $storeSearch = trim($request->input('store', ''));
+
         $orders = Order::where('customer_id', Auth::id())
             ->with(['orderItems.item', 'storeFront'])
+            ->when($storeSearch !== '', function ($query) use ($storeSearch) {
+                $query->whereHas('storeFront', function ($storeQuery) use ($storeSearch) {
+                    $storeQuery->where('name', 'like', '%' . $storeSearch . '%')
+                        ->orWhere('branch_name', 'like', '%' . $storeSearch . '%');
+                });
+            })
             ->latest()
             ->get();
 
-        return view('customer.orders.index', compact('orders'));
+        return view('customer.orders.index', compact('orders', 'storeSearch'));
     }
 
     public function orderAgain(Order $order)

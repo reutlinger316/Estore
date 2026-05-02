@@ -1985,10 +1985,10 @@ html[data-theme="dark"] .marketplace-glow-btn--alt {
 }
 
 .marketplace-product-card {
-    border: 1px solid rgba(0, 0, 0, 0.28);
+    border: 1px solid var(--border-soft);
     border-radius: 22px;
-    background: rgba(255, 255, 255, 0.72);
-    box-shadow: 0 14px 30px rgba(0, 0, 0, 0.08);
+    background: var(--card-bg);
+    box-shadow: var(--shadow-sm);
     overflow: hidden;
 }
 
@@ -2044,7 +2044,7 @@ html[data-theme="dark"] .marketplace-glow-btn--alt {
 
 .marketplace-product-body {
     padding: 18px;
-    border-top: 1px solid rgba(0, 0, 0, 0.22);
+    border-top: 1px solid var(--border-soft);
 }
 
 .marketplace-form-grid {
@@ -2060,7 +2060,7 @@ html[data-theme="dark"] .marketplace-glow-btn--alt {
     gap: 10px;
     padding: 16px;
     border-radius: 18px;
-    background: rgba(248, 250, 252, 0.86);
+    background: var(--card-bg-soft);
 }
 
 .marketplace-form-card label {
@@ -2071,10 +2071,11 @@ html[data-theme="dark"] .marketplace-glow-btn--alt {
 .marketplace-form-card input,
 .marketplace-form-card textarea {
     width: 100%;
-    border: 1px solid rgba(0, 0, 0, 0.35);
+    border: 1px solid var(--border-soft);
     border-radius: 14px;
     padding: 12px 14px;
-    background: #fff;
+    background: var(--surface-strong);
+    color: var(--text);
 }
 
 .marketplace-form-card textarea {
@@ -2120,10 +2121,10 @@ html[data-theme="dark"] .marketplace-glow-btn--alt {
 }
 
 .marketplace-product-card {
-    border: 1px solid rgba(0, 0, 0, 0.28);
+    border: 1px solid var(--border-soft);
     border-radius: 22px;
-    background: rgba(255, 255, 255, 0.72);
-    box-shadow: 0 14px 30px rgba(0, 0, 0, 0.08);
+    background: var(--card-bg);
+    box-shadow: var(--shadow-sm);
     overflow: hidden;
 }
 
@@ -2181,7 +2182,7 @@ html[data-theme="dark"] .marketplace-glow-btn--alt {
 
 .marketplace-product-body {
     padding: 18px;
-    border-top: 1px solid rgba(0, 0, 0, 0.22);
+    border-top: 1px solid var(--border-soft);
 }
 
 .marketplace-form-grid {
@@ -2197,7 +2198,7 @@ html[data-theme="dark"] .marketplace-glow-btn--alt {
     gap: 10px;
     padding: 16px;
     border-radius: 18px;
-    background: rgba(248, 250, 252, 0.86);
+    background: var(--card-bg-soft);
 }
 
 .marketplace-form-card label {
@@ -2208,10 +2209,11 @@ html[data-theme="dark"] .marketplace-glow-btn--alt {
 .marketplace-form-card input,
 .marketplace-form-card textarea {
     width: 100%;
-    border: 1px solid rgba(0, 0, 0, 0.35);
+    border: 1px solid var(--border-soft);
     border-radius: 14px;
     padding: 12px 14px;
-    background: #fff;
+    background: var(--surface-strong);
+    color: var(--text);
 }
 
 .marketplace-form-card textarea {

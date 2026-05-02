@@ -5,6 +5,41 @@
 
 @section('content')
 <div class="page-shell fade-up">
+    <div class="entity-card" style="margin-bottom: 18px;">
+        <form method="GET" action="{{ route('storefront.orders.index') }}" class="toolbar-row" style="align-items:end;">
+            <div style="flex:1; min-width:220px;">
+                <label><strong>Search</strong></label>
+                <input
+                    type="text"
+                    name="search"
+                    value="{{ $search ?? '' }}"
+                    placeholder="Search by customer name, order ID, or receipt no."
+                    style="width:100%;"
+                >
+            </div>
+
+            <div style="min-width:190px;">
+                <label><strong>Status</strong></label>
+                <select name="status" style="width:100%;">
+                    <option value="all" {{ ($status ?? 'all') === 'all' ? 'selected' : '' }}>All statuses</option>
+                    <option value="pending" {{ ($status ?? '') === 'pending' ? 'selected' : '' }}>Pending</option>
+                    <option value="accepted" {{ ($status ?? '') === 'accepted' ? 'selected' : '' }}>Accepted</option>
+                    <option value="preparing" {{ ($status ?? '') === 'preparing' ? 'selected' : '' }}>Preparing</option>
+                    <option value="ready" {{ ($status ?? '') === 'ready' ? 'selected' : '' }}>Ready</option>
+                    <option value="delivered" {{ ($status ?? '') === 'delivered' ? 'selected' : '' }}>Delivered</option>
+                    <option value="handed_over" {{ ($status ?? '') === 'handed_over' ? 'selected' : '' }}>Handed Over</option>
+                    <option value="cancelled" {{ ($status ?? '') === 'cancelled' ? 'selected' : '' }}>Cancelled</option>
+                </select>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Filter</button>
+
+            @if(($status ?? 'all') !== 'all' || !empty($search))
+                <a href="{{ route('storefront.orders.index') }}" class="btn btn-secondary">Clear</a>
+            @endif
+        </form>
+    </div>
+
     @if($orders->count())
         <div class="stack-list">
             @foreach($orders as $order)
@@ -14,7 +49,9 @@
                             <h3 class="entity-card__title">Order #{{ $order->id }}</h3>
                             <p>Receipt No: {{ $order->receipt_number ?? 'Not generated yet' }}</p>
                         </div>
-                        <span class="badge {{ $order->type === 'takeaway' ? 'badge-info' : 'badge-purple' }}">{{ ucfirst($order->type) }}</span>
+                        <span class="badge {{ $order->type === 'takeaway' ? 'badge-info' : 'badge-purple' }}">
+                            {{ ucfirst($order->type) }}
+                        </span>
                     </div>
 
                     <div class="entity-card__meta">
@@ -33,7 +70,9 @@
                             Phone: {{ $order->delivery_phone }}<br>
                             Address: {{ $order->delivery_address }}<br>
                             @if($order->delivery_lat && $order->delivery_lng)
-                                <a href="https://www.google.com/maps/search/?api=1&query={{ $order->delivery_lat }},{{ $order->delivery_lng }}" target="_blank" class="map-link">Open in Google Maps</a>
+                                <a href="https://www.google.com/maps/search/?api=1&query={{ $order->delivery_lat }},{{ $order->delivery_lng }}" target="_blank" class="map-link">
+                                    Open in Google Maps
+                                </a>
                             @endif
                         </div>
                     @endif
@@ -95,7 +134,7 @@
             @endforeach
         </div>
     @else
-        <div class="empty-state">No orders available for your branch yet.</div>
+        <div class="empty-state">No orders matched your search or status filter.</div>
     @endif
 </div>
 @endsection

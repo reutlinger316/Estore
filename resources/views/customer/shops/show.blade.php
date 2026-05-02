@@ -162,6 +162,32 @@
 
     <h2>Menu</h2>
 
+    <form method="GET" action="{{ route('customer.shops.show', $storeFront) }}" style="margin-bottom: 20px;">
+        <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
+            <input
+                type="text"
+                name="menu_search"
+                value="{{ $menuSearch ?? '' }}"
+                placeholder="Search menu by item name or description..."
+                style="flex: 1; min-width: 240px;"
+            >
+
+            <button type="submit" class="btn btn-primary">Search</button>
+
+            @if(!empty($menuSearch))
+                <a href="{{ route('customer.shops.show', $storeFront) }}" class="btn btn-secondary">
+                    Clear
+                </a>
+            @endif
+        </div>
+    </form>
+
+    @if(!empty($menuSearch))
+        <p style="margin-bottom: 15px;">
+            Showing menu results for: <strong>{{ $menuSearch }}</strong>
+        </p>
+    @endif
+
     @forelse($items as $item)
         @php
             $originalPrice = (float) $item->price;
@@ -258,7 +284,13 @@
 
         <hr>
     @empty
-        <p>No items available for this shop.</p>
+        <p>
+            @if(!empty($menuSearch))
+                No menu items found for "{{ $menuSearch }}".
+            @else
+                No items available for this shop.
+            @endif
+        </p>
     @endforelse
 
     <hr>
