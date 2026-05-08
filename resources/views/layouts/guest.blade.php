@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ config('app.name', 'E-Store') }} — Electronics Marketplace</title>
-    <meta name="description" content="Premium electronics marketplace for buyers, merchants, and storefronts.">
+    <title>{{ config('app.name', 'E-Store') }} — E Marketplace</title>
+    <meta name="description" content="Premium marketplace for buyers, merchants, and storefronts.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -23,7 +23,7 @@
             <div class="guest-sidebar-content">
                 <lottie-player src="{{ asset('animations/Shop.json') }}" background="transparent" speed="1" style="width: 280px; height: 280px;" loop autoplay></lottie-player>
                 <h1 class="guest-sidebar__title">Estore</h1>
-                <p class="guest-sidebar__subtitle">Premium Electronics Marketplace</p>
+                <p class="guest-sidebar__subtitle">Premium E Marketplace</p>
             </div>
             
             <div class="guest-sidebar-footer">
