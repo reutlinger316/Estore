@@ -33,16 +33,16 @@
 
                     <p>
                         <strong>Status:</strong>
-                        <span style="
-                            padding:4px 8px;
-                            border-radius:5px;
-                            color:white;
-                            background-color:
-                                {{ $order->status === 'paid' ? 'green' :
-                                   ($order->status === 'pending' ? 'orange' : 'red') }};
-                        ">
-                            {{ ucfirst($order->status) }}
-                        </span>
+                            <span style="
+                                padding:4px 8px;
+                                border-radius:5px;
+                                color:white;
+                                background-color:
+                                    {{ in_array($order->status, ['paid', 'handed_over']) ? 'green' :
+                                    ($order->status === 'pending' ? 'orange' : 'red') }};
+                            ">
+                                {{ ucfirst($order->status) }}
+                            </span>
                     </p>
 
                     <p><strong>Order Type:</strong> {{ ucfirst($order->type) }}</p>

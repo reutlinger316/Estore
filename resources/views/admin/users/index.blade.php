@@ -68,10 +68,10 @@
                     @endif
                 </div>
 
-                <div class="stat-row"><span>Role</span><strong>{{ ucfirst($user->role) }}</strong></div>
-                <div class="stat-row"><span>Balance</span><strong>{{ number_format($user->balance ?? 0, 2) }}</strong></div>
-                <div class="stat-row"><span>Reports Received</span><strong>{{ $user->reports_received_count ?? $user->reportsReceived()->count() }}</strong></div>
-                <div class="stat-row"><span>Reports Made</span><strong>{{ $user->reports_made_count ?? $user->reportsMade()->count() }}</strong></div>
+                <div class="stat-row"><span>Role</span><strong>: {{ ucfirst($user->role) }}</strong></div>
+                <div class="stat-row"><span>Balance</span><strong>: {{ number_format($user->balance ?? 0, 2) }}</strong></div>
+                <div class="stat-row"><span>Reports Received</span><strong>: {{ $user->reports_received_count ?? $user->reportsReceived()->count() }}</strong></div>
+                <div class="stat-row"><span>Reports Made</span><strong>: {{ $user->reports_made_count ?? $user->reportsMade()->count() }}</strong></div>
 
                 <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:16px;">
                     <a href="{{ route('admin.users.show', $user) }}" class="btn btn-ghost">View Activity</a>
